@@ -1,29 +1,37 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { Text, View, Image } from "react-native";
 import React, { useState } from "react";
 import CustomButton from "@/components/CustomButton";
-import { Stack, router } from "expo-router";
+import { Stack } from "expo-router";
 
 const StepOne = () => (
-  <View style={styles.stepContainer}>
-    <Text style={styles.stepTitle}>Choose your first destination</Text>
+  <View className="flex-1">
+    <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
+      Choose your first destination
+    </Text>
   </View>
 );
 
 const StepTwo = () => (
-  <View style={styles.stepContainer}>
-    <Text style={styles.stepTitle}>Calculate distance</Text>
+  <View className="flex-1">
+    <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
+      Calculate distance
+    </Text>
   </View>
 );
 
 const StepThree = () => (
-  <View style={styles.stepContainer}>
-    <Text style={styles.stepTitle}>Choose tourguide</Text>
+  <View className="flex-1">
+    <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
+      Choose tourguide
+    </Text>
   </View>
 );
 
 const StepFour = () => (
-  <View style={styles.stepContainer}>
-    <Text style={styles.stepTitle}>Review & Confirm</Text>
+  <View className="flex-1">
+    <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
+      Review & Confirm
+    </Text>
   </View>
 );
 
@@ -52,7 +60,7 @@ const Trip = () => {
   };
 
   return (
-    <View style={{ height: "100%", position: "relative" }}>
+    <View className="h-full relative">
       <Stack.Screen
         options={{
           headerShown: currentStep > 0,
@@ -73,13 +81,14 @@ const Trip = () => {
         <>
           <Image
             source={require("@/assets/images/cairo.png")}
-            className="w-full"
+            className="w-full h-[80%]"
             resizeMode="cover"
-            style={{ height: "80%" }}
           />
-          <View style={styles.card}>
-            <Text style={styles.title}>Start booking your trip</Text>
-            <Text style={styles.description}>
+          <View className="absolute left-5 right-5 bottom-[15%] bg-white p-5 rounded-2xl shadow-lg">
+            <Text className="text-2xl font-bold mb-2.5 text-center">
+              Start booking your trip
+            </Text>
+            <Text className="text-base text-gray-600 text-center mb-5">
               You will go through 4 stages to easily customize your trip.
             </Text>
             <CustomButton
@@ -91,9 +100,9 @@ const Trip = () => {
           </View>
         </>
       ) : (
-        <View style={styles.stepsContainer}>
+        <View className="flex-1 p-5">
           {CurrentStepComponent && <CurrentStepComponent />}
-          <View style={styles.navigationButtons}>
+          <View className="py-5">
             <CustomButton
               title={currentStep === 4 ? "Finish" : "Next"}
               handlePress={handleNext}
@@ -108,51 +117,3 @@ const Trip = () => {
 };
 
 export default Trip;
-
-const styles = StyleSheet.create({
-  card: {
-    position: "absolute",
-    left: 20,
-    right: 20,
-    bottom: "15%",
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 15,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 10,
-    textAlign: "center",
-  },
-  description: {
-    fontSize: 16,
-    color: "#666",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  stepsContainer: {
-    flex: 1,
-    padding: 20,
-  },
-  stepContainer: {
-    flex: 1,
-  },
-  stepTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#0F2650",
-  },
-  navigationButtons: {
-    paddingVertical: 20,
-  },
-});
