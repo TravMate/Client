@@ -6,7 +6,9 @@ const API_KEY = GOOGLE_PLACES_API_KEY;
 const BASE_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
 
 export const fetchTourismPlacesApi = async () => {
+  console.log(API_KEY);
   try {
+    console.log("hi");
     const response = await axios.get(BASE_URL, {
       params: {
         location: "30.0444,31.2357", // Latitude and longitude of Cairo
@@ -16,9 +18,11 @@ export const fetchTourismPlacesApi = async () => {
         key: API_KEY,
       },
     });
+    console.log(response);
     // console.log(response.data.results); // Log the response
     return response.data.results;
   } catch (error) {
+    console.log("error");
     console.error("Error fetching data:", error);
   }
 };
