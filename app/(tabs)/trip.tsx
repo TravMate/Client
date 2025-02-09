@@ -5,19 +5,19 @@ import { Stack, router } from "expo-router";
 
 const StepOne = () => (
   <View style={styles.stepContainer}>
-    <Text style={styles.stepTitle}>Choose Destination</Text>
+    <Text style={styles.stepTitle}>Choose your first destination</Text>
   </View>
 );
 
 const StepTwo = () => (
   <View style={styles.stepContainer}>
-    <Text style={styles.stepTitle}>Select Dates</Text>
+    <Text style={styles.stepTitle}>Calculate distance</Text>
   </View>
 );
 
 const StepThree = () => (
   <View style={styles.stepContainer}>
-    <Text style={styles.stepTitle}>Pick Activities</Text>
+    <Text style={styles.stepTitle}>Choose tourguide</Text>
   </View>
 );
 
