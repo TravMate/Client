@@ -1,3 +1,4 @@
+import { UserProps } from "@/types/type";
 import { Client, Account, ID } from "react-native-appwrite";
 
 const PROJECT_ID = process.env.EXPO_PUBLIC_PROJECT_ID;
