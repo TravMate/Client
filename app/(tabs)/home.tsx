@@ -1,33 +1,24 @@
-import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import * as OutlineIcons from "react-native-heroicons/outline";
-import * as SolidIcons from "react-native-heroicons/solid";
-import { logout } from "@/lib/auth";
-import { router } from "expo-router";
 import { fetchTourismPlacesApi } from "@/api/googlePlacesApi";
-import { images } from "@/constants";
 import { useFetchTourismPlaces } from "@/hooks/FetchTourismPLaces";
 import SwipList from "@/components/SwipList";
 import PlacesList from "@/components/PlacesList";
+import useFavoriteStore from "@/store";
 
 const home = () => {
   const { data, isLoading } = useFetchTourismPlaces();
+  const { loadFavorites, loading } = useFavoriteStore();
+
   // console.log(data);
   const [places, setPlaces] = useState([]);
 
   useEffect(() => {
+    loadFavorites();
     fetchTourismPlacesApi().then((data) => setPlaces(data));
   }, []);
 
-  if (isLoading) {
+  if (isLoading || loading) {
     return (
       <View className="flex-1 items-center justify-center">
         <ActivityIndicator size="large" />
@@ -54,20 +45,3 @@ const home = () => {
 };
 
 export default home;
-
-const styles = StyleSheet.create({
-  item: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  image: {
-    width: "100%",
-    height: 200,
-    marginTop: 10,
-  },
-});

@@ -40,8 +40,8 @@ const TabLayout = () => {
             </View>
           ),
           headerRight: () => (
-            <View className="p-1.5 rounded-full bg-white mr-5">
-              <SolidIcons.Squares2X2Icon color={"#F98C53"} size={30} />
+            <View className="mr-5">
+              <SolidIcons.BellIcon color={"#F98C53"} size={30} />
             </View>
           ),
           tabBarIcon: ({ color, focused }) =>

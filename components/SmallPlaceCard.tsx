@@ -6,18 +6,19 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Place } from "@/types/type";
 import * as OutlineIcons from "react-native-heroicons/outline";
 import * as SolidIcons from "react-native-heroicons/solid";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import useFavoriteStore from "@/store"; // Adjust the import path
 
 interface SmallPlaceCardProps {
   item: Place;
 }
 
 type RootStackParamList = {
-  PlaceDetails: { data: Place };
+  PlaceDetails: { placeData: Place; isFav: boolean };
 };
 
 type PlaceDetailsNavigationProp = NavigationProp<
@@ -29,17 +30,37 @@ var width = Dimensions.get("window").width;
 const API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
 const SmallPlaceCard = ({ item }: SmallPlaceCardProps) => {
-  const [isFavorite, setIsFavorite] = useState(false);
   const navigation = useNavigation<PlaceDetailsNavigationProp>();
+  const [isFav, setIsFav] = useState(false);
+
+  const { addFavorite, removeFavorite, isFavorite } = useFavoriteStore();
+
+  useEffect(() => {
+    isFavorite(item.place_id) ? setIsFav(true) : setIsFav(false);
+  }, [item.place_id]);
+
+  const handleFavoritePress = () => {
+    if (!isFav) {
+      addFavorite(item.place_id);
+    } else {
+      removeFavorite(item.place_id);
+    }
+    setIsFav(!isFav);
+  };
+
   const handleCardPress = () => {
     navigation.navigate("PlaceDetails", {
-      data: item,
+      placeData: item,
+      isFav: isFav,
     });
   };
 
-  const handleFavoritePress = () => {
-    setIsFavorite(!isFavorite);
-  };
+  // Safely check if item.photos and item.photos[0] exist
+  const photoUrl =
+    item.photos && item.photos[0] && item.photos[0].photo_reference
+      ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=700&photoreference=${item.photos[0].photo_reference}&key=${API_KEY}`
+      : null;
+
   return (
     <TouchableOpacity
       onPress={handleCardPress}
@@ -54,17 +75,30 @@ const SmallPlaceCard = ({ item }: SmallPlaceCardProps) => {
       }}
     >
       {/* Background Image */}
-      <Image
-        source={{
-          uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${width}&photoreference=${item.photos[0].photo_reference}&key=${API_KEY}`,
-        }}
-        style={{
-          width: width * 0.55,
-          height: width * 0.55,
-          borderRadius: 10,
-        }}
-        resizeMode="cover"
-      />
+      {photoUrl ? (
+        <Image
+          source={{ uri: photoUrl }}
+          style={{
+            width: width * 0.55,
+            height: width * 0.55,
+            borderRadius: 10,
+          }}
+          resizeMode="cover"
+        />
+      ) : (
+        <View
+          style={{
+            width: width * 0.55,
+            height: width * 0.55,
+            borderRadius: 10,
+            backgroundColor: "#e0e0e0", // Placeholder background color
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text>No Image Available</Text>
+        </View>
+      )}
 
       {/* Gradient Overlay */}
       <View
@@ -108,19 +142,12 @@ const SmallPlaceCard = ({ item }: SmallPlaceCardProps) => {
           borderRadius: 25,
           padding: 10,
         }}
+        onPress={handleFavoritePress}
       >
-        {isFavorite ? (
-          <SolidIcons.HeartIcon
-            size={24}
-            color="#F98C53"
-            onPress={handleFavoritePress}
-          />
+        {isFav ? (
+          <SolidIcons.HeartIcon size={24} color="#F98C53" />
         ) : (
-          <OutlineIcons.HeartIcon
-            size={24}
-            color="#F98C53"
-            onPress={handleFavoritePress}
-          />
+          <OutlineIcons.HeartIcon size={24} color="#F98C53" />
         )}
       </TouchableOpacity>
     </TouchableOpacity>
@@ -129,4 +156,10 @@ const SmallPlaceCard = ({ item }: SmallPlaceCardProps) => {
 
 export default SmallPlaceCard;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

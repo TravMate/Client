@@ -11,12 +11,11 @@ export const fetchTourismPlacesApi = async () => {
       params: {
         location: "30.0444,31.2357", // Latitude and longitude of Cairo
         // location: "31.2001,29.9187", //Latitude and longitude of Alexandria
-        radius: 50000, // Radius in meters (adjust as needed)
+        radius: 20000, // Radius in meters (adjust as needed)
         type: "tourist_attraction", // Filter for tourist attractions
         key: API_KEY,
       },
     });
-    // console.log(response.data.results); // Log the response
     return response.data.results;
   } catch (error) {
     console.error("Error fetching data:", error);
