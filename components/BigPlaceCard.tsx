@@ -26,12 +26,34 @@ const API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 const BigPlaceCard = ({ item }: PlaceCardProps) => {
   const navigation = useNavigation<PlaceDetailsNavigationProp>();
   const [isFav, setIsFav] = useState(false);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
   const { addFavorite, removeFavorite, isFavorite, loading, favoriteIds } =
     useFavoriteStore();
 
   useEffect(() => {
     isFavorite(item?.place_id) ? setIsFav(true) : setIsFav(false);
+  }, [item.place_id]);
+
+  useEffect(() => {
+    const fetchFreshPhotoUrl = async () => {
+      try {
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/place/details/json?place_id=${item.place_id}&fields=photos&key=${process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY}`
+        );
+        const data = await response.json();
+
+        if (data.result?.photos?.[0]?.photo_reference) {
+          const newPhotoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=700&photoreference=${data.result.photos[0].photo_reference}&key=${process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY}`;
+          setPhotoUrl(newPhotoUrl);
+        }
+      } catch (error) {
+        console.error("Error fetching fresh photo URL:", error);
+        // Fallback to a default image or handle error as needed
+      }
+    };
+
+    fetchFreshPhotoUrl();
   }, [item.place_id]);
 
   const handleFavoritePress = () => {
@@ -49,12 +71,6 @@ const BigPlaceCard = ({ item }: PlaceCardProps) => {
       isFav: isFav,
     });
   };
-
-  // Safely check if item.photos and item.photos[0] exist
-  const photoUrl =
-    item.photos && item.photos[0] && item.photos[0].photo_reference
-      ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=700&photoreference=${item.photos[0].photo_reference}&key=${API_KEY}`
-      : null;
 
   return (
     <View

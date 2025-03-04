@@ -1,6 +1,5 @@
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import { fetchTourismPlacesApi } from "@/api/googlePlacesApi";
+import React, { useEffect } from "react";
 import { useFetchTourismPlaces } from "@/hooks/FetchTourismPLaces";
 import SwipList from "@/components/SwipList";
 import PlacesList from "@/components/PlacesList";
@@ -10,12 +9,8 @@ const home = () => {
   const { data, isLoading } = useFetchTourismPlaces();
   const { loadFavorites, loading } = useFavoriteStore();
 
-  // console.log(data);
-  const [places, setPlaces] = useState([]);
-
   useEffect(() => {
     loadFavorites();
-    fetchTourismPlacesApi().then((data) => setPlaces(data));
   }, []);
 
   if (isLoading || loading) {
