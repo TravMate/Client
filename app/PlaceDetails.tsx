@@ -17,6 +17,7 @@ import { router } from "expo-router";
 interface PlaceDetailsProps {
   placeData: Place;
   isFav: boolean;
+  photoUrl: string;
 }
 
 var width = Dimensions.get("window").width;
@@ -59,9 +60,10 @@ const PlaceDetails = () => {
       {/* image section */}
       <View>
         <Image
-          source={{
-            uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${placeDetails?.photos[0].photo_reference}&key=${API_KEY}`,
-          }}
+          // source={{
+          //   uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${placeDetails?.photos[0].photo_reference}&key=${API_KEY}`,
+          // }}
+          source={{ uri: data.photoUrl }}
           style={{
             width: width,
             height: width * 0.6,
