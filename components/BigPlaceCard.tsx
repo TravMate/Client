@@ -5,10 +5,12 @@ import * as OutlineIcons from "react-native-heroicons/outline";
 import * as SolidIcons from "react-native-heroicons/solid";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useFavoriteStore from "@/store";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface PlaceCardProps {
   item: Place;
   index?: number;
+  variation?: "large" | "small";
 }
 
 type RootStackParamList = {
@@ -20,16 +22,17 @@ type PlaceDetailsNavigationProp = NavigationProp<
   "PlaceDetails"
 >;
 
-var { width } = Dimensions.get("window");
-const API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
+const { width } = Dimensions.get("window");
+const CARD_GAP = 16;
+const HORIZONTAL_PADDING = 20;
+const SMALL_CARD_WIDTH = (width - (HORIZONTAL_PADDING * 2 + CARD_GAP)) / 2;
 
-const BigPlaceCard = ({ item }: PlaceCardProps) => {
+const BigPlaceCard = ({ item, variation = "large" }: PlaceCardProps) => {
   const navigation = useNavigation<PlaceDetailsNavigationProp>();
   const [isFav, setIsFav] = useState(false);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
-  const { addFavorite, removeFavorite, isFavorite, loading, favoriteIds } =
-    useFavoriteStore();
+  const { addFavorite, removeFavorite, isFavorite } = useFavoriteStore();
 
   useEffect(() => {
     isFavorite(item?.place_id) ? setIsFav(true) : setIsFav(false);
@@ -49,7 +52,6 @@ const BigPlaceCard = ({ item }: PlaceCardProps) => {
         }
       } catch (error) {
         console.error("Error fetching fresh photo URL:", error);
-        // Fallback to a default image or handle error as needed
       }
     };
 
@@ -72,6 +74,10 @@ const BigPlaceCard = ({ item }: PlaceCardProps) => {
     });
   };
 
+  const cardWidth = variation === "large" ? width : SMALL_CARD_WIDTH;
+  const cardHeight =
+    variation === "large" ? width * 0.6 : SMALL_CARD_WIDTH * 1.6;
+
   return (
     <View
       style={{
@@ -87,8 +93,8 @@ const BigPlaceCard = ({ item }: PlaceCardProps) => {
         <Image
           source={{ uri: photoUrl }}
           style={{
-            width: width,
-            height: width * 0.6,
+            width: cardWidth,
+            height: cardHeight,
             borderRadius: 20,
           }}
           resizeMode="cover"
@@ -96,10 +102,10 @@ const BigPlaceCard = ({ item }: PlaceCardProps) => {
       ) : (
         <View
           style={{
-            width: width,
-            height: width * 0.6,
+            width: cardWidth,
+            height: cardHeight,
             borderRadius: 20,
-            backgroundColor: "#e0e0e0", // Placeholder background color
+            backgroundColor: "#e0e0e0",
             justifyContent: "center",
             alignItems: "center",
           }}
@@ -109,14 +115,15 @@ const BigPlaceCard = ({ item }: PlaceCardProps) => {
       )}
 
       {/* Gradient Overlay */}
-      <View
+      <LinearGradient
+        colors={["transparent", "rgba(0,0,0,0.2)", "rgba(0,0,0,0.6)"]}
         style={{
           position: "absolute",
           bottom: 0,
           left: 0,
-          width: "100%",
+          right: 0,
           height: "100%",
-          backgroundColor: "rgba(0,0,0,0.2)",
+          borderRadius: 20,
         }}
       />
 
@@ -131,15 +138,20 @@ const BigPlaceCard = ({ item }: PlaceCardProps) => {
       >
         <Text
           className="text-md font-bold"
-          style={{ color: "white", width: "74%" }}
+          style={{
+            color: "white",
+            width: variation === "large" ? "74%" : "100%",
+          }}
         >
           {item.vicinity}
         </Text>
         <Text
-          className="text-slate-100 font-bold text-2xl"
+          className={`text-slate-100 font-bold ${
+            variation === "small" ? "text-lg" : "text-2xl"
+          }`}
           style={{
             color: "white",
-            width: "74%",
+            width: variation === "large" ? "74%" : "100%",
           }}
         >
           {item.name}
@@ -166,19 +178,21 @@ const BigPlaceCard = ({ item }: PlaceCardProps) => {
       </TouchableOpacity>
 
       {/* Next (→) Button */}
-      <TouchableOpacity
-        style={{
-          position: "absolute",
-          bottom: 15,
-          right: 15,
-          backgroundColor: "#fff",
-          borderRadius: 25,
-          padding: 10,
-        }}
-        onPress={handleCardPress}
-      >
-        <OutlineIcons.ChevronRightIcon size={24} color="black" />
-      </TouchableOpacity>
+      {variation === "large" && (
+        <TouchableOpacity
+          style={{
+            position: "absolute",
+            bottom: 15,
+            right: 15,
+            backgroundColor: "#fff",
+            borderRadius: 25,
+            padding: 10,
+          }}
+          onPress={handleCardPress}
+        >
+          <OutlineIcons.ChevronRightIcon size={24} color="black" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
