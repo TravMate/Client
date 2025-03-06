@@ -12,7 +12,7 @@ interface PlaceCardProps {
 }
 
 type RootStackParamList = {
-  PlaceDetails: { placeData: Place; isFav: boolean };
+  PlaceDetails: { placeData: Place; isFav: boolean; photoUrl: string };
 };
 
 type PlaceDetailsNavigationProp = NavigationProp<
@@ -44,7 +44,7 @@ const BigPlaceCard = ({ item }: PlaceCardProps) => {
         const data = await response.json();
 
         if (data.result?.photos?.[0]?.photo_reference) {
-          const newPhotoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=700&photoreference=${data.result.photos[0].photo_reference}&key=${process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY}`;
+          const newPhotoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${data.result.photos[0].photo_reference}&key=${process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY}`;
           setPhotoUrl(newPhotoUrl);
         }
       } catch (error) {
@@ -69,6 +69,7 @@ const BigPlaceCard = ({ item }: PlaceCardProps) => {
     navigation.navigate("PlaceDetails", {
       placeData: item,
       isFav: isFav,
+      photoUrl: photoUrl || "",
     });
   };
 

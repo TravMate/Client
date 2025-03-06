@@ -49,7 +49,7 @@ const SmallPlaceCard = ({ item }: SmallPlaceCardProps) => {
         const data = await response.json();
 
         if (data.result?.photos?.[0]?.photo_reference) {
-          const newPhotoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=700&photoreference=${data.result.photos[0].photo_reference}&key=${API_KEY}`;
+          const newPhotoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${data.result.photos[0].photo_reference}&key=${API_KEY}`;
           setPhotoUrl(newPhotoUrl);
         }
       } catch (error) {
