@@ -38,7 +38,6 @@ const EditProfile = () => {
   const [form, setForm] = useState({
     name: "",
     email: "",
-    phone: "",
   });
 
   useEffect(() => {
@@ -48,7 +47,6 @@ const EditProfile = () => {
         setForm({
           name: userData.name || "",
           email: userData.email || "",
-          phone: userData.phone || "",
         });
       }
     };
@@ -60,14 +58,8 @@ const EditProfile = () => {
     try {
       const account = new Account(client);
 
-      // Update name
       if (form.name) {
         await account.updateName(form.name);
-      }
-
-      // Update phone
-      if (form.phone) {
-        await account.updatePhone(form.phone, "");
       }
 
       Alert.alert("Success", "Profile updated successfully");
@@ -139,22 +131,11 @@ const EditProfile = () => {
             />
           </View>
 
-          {/* Phone Input */}
-          <View>
-            <Text className="text-gray-600 mb-2 text-base">Phone Number</Text>
-            <CustomTextInput
-              value={form.phone}
-              onChangeText={(value) => setForm({ ...form, phone: value })}
-              keyboardType="phone-pad"
-              inputStyles={{ backgroundColor: "#F9FAFB" }}
-            />
-          </View>
-
           <CustomButton
             title="Update"
             handlePress={handleUpdateProfile}
             isLoading={isLoading}
-            containerStyles="w-full mx-auto bg-[#F98C53] rounded-xl py-4 mt-52"
+            containerStyles="w-full mx-auto bg-[#F98C53] rounded-xl py-4 mt-80"
             textStyles="text-white font-medium"
           />
         </View>
