@@ -39,6 +39,8 @@
     "react-native": "0.76.6",
     "react-native-appwrite": "^0.6.0",
     "react-native-gesture-handler": "~2.20.2",
+    "react-native-get-random-values": "^1.11.0",
+    "react-native-google-places-autocomplete": "^2.5.7",
     "react-native-heroicons": "^4.0.0",
     "react-native-reanimated": "~3.16.1",
     "react-native-reanimated-carousel": "^3.5.1",

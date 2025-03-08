@@ -72,3 +72,20 @@ export interface Place {
 }
 
 export type PlacesResponse = Place[];
+
+declare interface GoogleInputProps {
+  icon?: string;
+  initialLocation?: string;
+  containerStyle?: string;
+  textInputBackgroundColor?: string;
+  handlePress: ({
+    // eslint-disable-next-line prettier/prettier
+    latitude,
+    longitude,
+    address,
+  }: {
+    latitude: number;
+    longitude: number;
+    address: string;
+  }) => void;
+}

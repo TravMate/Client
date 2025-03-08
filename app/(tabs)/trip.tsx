@@ -1,49 +1,67 @@
-import { Text, View, Image } from "react-native";
+import { Text, View, Image, TouchableOpacity, Dimensions } from "react-native";
 import React, { useState } from "react";
 import CustomButton from "@/components/CustomButton";
 import { Stack } from "expo-router";
+import * as SolidIcons from "react-native-heroicons/solid";
+import GoogleTextInput from "@/components/GoogleTextInput";
+import "react-native-get-random-values";
 
-const StepOne = () => (
-  <View className="flex-1">
-    <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
-      Choose your first destination
-    </Text>
-  </View>
-);
+const width = Dimensions.get("window").width;
 
-const StepTwo = () => (
-  <View className="flex-1">
-    <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
-      Calculate distance
-    </Text>
-  </View>
-);
-
-const StepThree = () => (
-  <View className="flex-1">
-    <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
-      Choose tourguide
-    </Text>
-  </View>
-);
-
-const StepFour = () => (
-  <View className="flex-1">
-    <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
-      Review & Confirm
-    </Text>
-  </View>
-);
+const stepsConfig = [
+  {
+    component: () => (
+      <View className="flex-1">
+        {/* <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
+          Choose your first destination
+        </Text> */}
+        <GoogleTextInput
+          // icon={<SolidIcons.MapPinIcon size={24} color="black" />}
+          containerStyle="w-full"
+          handlePress={() => {}}
+          // textInputBackgroundColor="#fff"
+          initialLocation="Egypt"
+        />
+      </View>
+    ),
+    title: "Choose Destination",
+  },
+  {
+    component: () => (
+      <View className="flex-1">
+        <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
+          Calculate distance
+        </Text>
+      </View>
+    ),
+    title: "Calculate Distance",
+  },
+  {
+    component: () => (
+      <View className="flex-1">
+        <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
+          Choose tourguide
+        </Text>
+      </View>
+    ),
+    title: "Choose Tourguide",
+  },
+  {
+    component: () => (
+      <View className="flex-1">
+        <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
+          Review & Confirm
+        </Text>
+      </View>
+    ),
+    title: "Review & Confirm",
+  },
+];
 
 const Trip = () => {
   const [currentStep, setCurrentStep] = useState(0);
 
-  const steps = [StepOne, StepTwo, StepThree, StepFour];
-  const CurrentStepComponent =
-    currentStep === 0 ? null : steps[currentStep - 1];
-
   const handleStart = () => {
-    console.log("start");
     setCurrentStep(1);
   };
 
@@ -60,20 +78,51 @@ const Trip = () => {
   };
 
   return (
-    <View className="h-full relative">
+    <View className="h-full relative bg-[#F1F1F1]">
       <Stack.Screen
         options={{
           headerShown: currentStep > 0,
           headerLeft: () =>
             currentStep > 0 ? (
-              <CustomButton
-                title="Back"
-                handlePress={handleBack}
-                containerStyles="bg-transparent"
-                textStyles="text-[#0F2650]"
-              />
+              <TouchableOpacity
+                style={{
+                  marginLeft: 15,
+                  backgroundColor: "#fff",
+                  borderRadius: 25,
+                  padding: 8,
+                }}
+                onPress={handleBack}
+              >
+                <SolidIcons.ChevronLeftIcon size={24} color="black" />
+              </TouchableOpacity>
             ) : null,
-          headerTitle: currentStep > 0 ? `Step ${currentStep} of 4` : "",
+          headerTitle:
+            currentStep > 0 ? stepsConfig[currentStep - 1].title : "",
+          headerStyle: {
+            height: 75,
+          },
+          headerTitleStyle: {
+            marginLeft: width / 2 - 145,
+          },
+          headerBackground: () => (
+            <View
+              style={{
+                backgroundColor: "#F6F6F6",
+                height: 4,
+                width: "100%",
+                position: "absolute",
+                bottom: 0,
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#F98C53",
+                  height: 4,
+                  width: `${(currentStep / 4) * 100}%`,
+                }}
+              />
+            </View>
+          ),
         }}
       />
 
@@ -101,7 +150,7 @@ const Trip = () => {
         </>
       ) : (
         <View className="flex-1 p-5">
-          {CurrentStepComponent && <CurrentStepComponent />}
+          {currentStep > 0 && stepsConfig[currentStep - 1].component()}
           <View className="py-5">
             <CustomButton
               title={currentStep === 4 ? "Finish" : "Next"}
