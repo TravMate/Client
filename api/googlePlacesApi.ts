@@ -6,7 +6,6 @@ const API_KEY = GOOGLE_PLACES_API_KEY;
 const BASE_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
 
 export const fetchTourismPlacesApi = async () => {
-  console.log(API_KEY);
   try {
     console.log("hi");
     const response = await axios.get(BASE_URL, {

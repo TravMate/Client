@@ -94,7 +94,7 @@ const Favorites = () => {
 
   const renderItem = ({ item }: { item: Place }) => (
     <View style={{ width: CARD_WIDTH }}>
-      <BigPlaceCard item={item} variation="small" />
+      <BigPlaceCard item={item} variation="small" key={item.place_id} />
     </View>
   );
 

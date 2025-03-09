@@ -12,6 +12,7 @@ import * as OutlineIcons from "react-native-heroicons/outline";
 import * as SolidIcons from "react-native-heroicons/solid";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useFavoriteStore from "@/store"; // Adjust the import path
+import { useFetchTourismPlaces } from "@/hooks/FetchTourismPLaces";
 
 interface SmallPlaceCardProps {
   item: Place;
@@ -32,7 +33,7 @@ const API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 const SmallPlaceCard = ({ item }: SmallPlaceCardProps) => {
   const navigation = useNavigation<PlaceDetailsNavigationProp>();
   const [isFav, setIsFav] = useState(false);
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  // const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
   const { addFavorite, removeFavorite, isFavorite } = useFavoriteStore();
 
@@ -40,26 +41,27 @@ const SmallPlaceCard = ({ item }: SmallPlaceCardProps) => {
     isFavorite(item.place_id) ? setIsFav(true) : setIsFav(false);
   }, [item.place_id]);
 
-  useEffect(() => {
-    const fetchFreshPhotoUrl = async () => {
-      try {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/place/details/json?place_id=${item.place_id}&fields=photos&key=${API_KEY}`
-        );
-        const data = await response.json();
+  const url = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${item.photos[0].photo_reference}&key=${API_KEY}`;
+  // useEffect(() => {
+  // const fetchFreshPhotoUrl = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `https://maps.googleapis.com/maps/api/place/details/json?place_id=${item.place_id}&fields=photos&key=${API_KEY}`
+  //     );
+  //     const data = await response.json();
 
-        if (data.result?.photos?.[0]?.photo_reference) {
-          const newPhotoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${data.result.photos[0].photo_reference}&key=${API_KEY}`;
-          setPhotoUrl(newPhotoUrl);
-        }
-      } catch (error) {
-        console.error("Error fetching fresh photo URL:", error);
-        setPhotoUrl(null);
-      }
-    };
+  //     if (data.result?.photos?.[0]?.photo_reference) {
+  //       const newPhotoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${data.result.photos[0].photo_reference}&key=${API_KEY}`;
+  //       setPhotoUrl(newPhotoUrl);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching fresh photo URL:", error);
+  //     setPhotoUrl(null);
+  //   }
+  // };
 
-    fetchFreshPhotoUrl();
-  }, [item.place_id]);
+  // fetchFreshPhotoUrl();
+  // }, [item.place_id]);
 
   const handleFavoritePress = () => {
     if (!isFav) {
@@ -74,7 +76,7 @@ const SmallPlaceCard = ({ item }: SmallPlaceCardProps) => {
     navigation.navigate("PlaceDetails", {
       placeData: item,
       isFav: isFav,
-      photoUrl: photoUrl || "",
+      photoUrl: url || "",
     });
   };
 
@@ -92,15 +94,18 @@ const SmallPlaceCard = ({ item }: SmallPlaceCardProps) => {
       }}
     >
       {/* Background Image */}
-      {photoUrl ? (
+      {url ? (
         <Image
-          source={{ uri: photoUrl }}
+          source={{ uri: url }}
           style={{
             width: width * 0.55,
             height: width * 0.55,
             borderRadius: 10,
           }}
           resizeMode="cover"
+          onError={() => {
+            useFetchTourismPlaces();
+          }}
         />
       ) : (
         <View
