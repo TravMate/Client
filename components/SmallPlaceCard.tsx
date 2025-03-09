@@ -13,6 +13,7 @@ import * as SolidIcons from "react-native-heroicons/solid";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useFavoriteStore from "@/store"; // Adjust the import path
 import { useFetchTourismPlaces } from "@/hooks/FetchTourismPLaces";
+import PlaceCardSkeleton from "./PlaceCardSkeleton";
 
 interface SmallPlaceCardProps {
   item: Place;
@@ -108,18 +109,7 @@ const SmallPlaceCard = ({ item }: SmallPlaceCardProps) => {
           }}
         />
       ) : (
-        <View
-          style={{
-            width: width * 0.55,
-            height: width * 0.55,
-            borderRadius: 10,
-            backgroundColor: "#e0e0e0", // Placeholder background color
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text>No Image Available</Text>
-        </View>
+        <PlaceCardSkeleton size="small" />
       )}
 
       {/* Gradient Overlay */}

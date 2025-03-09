@@ -7,6 +7,7 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useFavoriteStore from "@/store";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFetchTourismPlaces } from "@/hooks/FetchTourismPLaces";
+import PlaceCardSkeleton from "./PlaceCardSkeleton";
 
 interface PlaceCardProps {
   item: Place;
@@ -107,18 +108,7 @@ const BigPlaceCard = ({ item, variation = "large" }: PlaceCardProps) => {
           }}
         />
       ) : (
-        <View
-          style={{
-            width: cardWidth,
-            height: cardHeight,
-            borderRadius: 20,
-            backgroundColor: "#e0e0e0",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text>No Image Available</Text>
-        </View>
+        <PlaceCardSkeleton size="large" />
       )}
 
       {/* Gradient Overlay */}
