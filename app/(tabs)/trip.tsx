@@ -3,27 +3,14 @@ import React, { useState } from "react";
 import CustomButton from "@/components/CustomButton";
 import { Stack } from "expo-router";
 import * as SolidIcons from "react-native-heroicons/solid";
-import GoogleTextInput from "@/components/GoogleTextInput";
 import "react-native-get-random-values";
+import PlanTrip from "@/components/PlanTrip";
 
 const width = Dimensions.get("window").width;
 
 const stepsConfig = [
   {
-    component: () => (
-      <View className="flex-1">
-        {/* <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
-          Choose your first destination
-        </Text> */}
-        <GoogleTextInput
-          // icon={<SolidIcons.MapPinIcon size={24} color="black" />}
-          containerStyle="w-full"
-          handlePress={() => {}}
-          // textInputBackgroundColor="#fff"
-          initialLocation="Egypt"
-        />
-      </View>
-    ),
+    component: () => <PlanTrip />,
     title: "Choose Destination",
   },
   {

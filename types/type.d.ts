@@ -89,3 +89,15 @@ declare interface GoogleInputProps {
     address: string;
   }) => void;
 }
+
+export interface GoogleInputProps {
+  icon?: any;
+  containerStyle?: string;
+  handlePress: (data: any) => void;
+  textInputBackgroundColor?: string;
+  initialLocation?: string;
+}
+
+export type GoogleTextInputRef = {
+  clear: () => void;
+};
