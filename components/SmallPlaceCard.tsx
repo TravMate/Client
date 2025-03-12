@@ -11,7 +11,7 @@ import { Place } from "@/types/type";
 import * as OutlineIcons from "react-native-heroicons/outline";
 import * as SolidIcons from "react-native-heroicons/solid";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import useFavoriteStore from "@/store"; // Adjust the import path
+import useFavoriteStore from "@/store/favoriteStore"; // Adjust the import path
 import { useFetchTourismPlaces } from "@/hooks/FetchTourismPLaces";
 import PlaceCardSkeleton from "./PlaceCardSkeleton";
 

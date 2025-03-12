@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useFetchTourismPlaces } from "@/hooks/FetchTourismPLaces";
 import SwipList from "@/components/SwipList";
 import PlacesList from "@/components/PlacesList";
-import useFavoriteStore from "@/store";
+import useFavoriteStore from "@/store/favoriteStore";
 
 const home = () => {
   const { data, isLoading } = useFetchTourismPlaces();

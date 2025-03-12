@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BigPlaceCard from "@/components/BigPlaceCard";
 import { Place } from "@/types/type";
-import useFavoriteStore from "@/store";
+import useFavoriteStore from "@/store/favoriteStore";
 import { router } from "expo-router";
 import * as Icons from "react-native-heroicons/outline";
 

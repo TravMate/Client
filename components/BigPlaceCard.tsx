@@ -4,7 +4,7 @@ import { Place } from "@/types/type";
 import * as OutlineIcons from "react-native-heroicons/outline";
 import * as SolidIcons from "react-native-heroicons/solid";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import useFavoriteStore from "@/store";
+import useFavoriteStore from "@/store/favoriteStore";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFetchTourismPlaces } from "@/hooks/FetchTourismPLaces";
 import PlaceCardSkeleton from "./PlaceCardSkeleton";

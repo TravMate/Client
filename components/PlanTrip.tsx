@@ -15,26 +15,21 @@ import { PlusCircleIcon } from "react-native-heroicons/solid";
 import GoogleTextInput, { GoogleTextInputRef } from "./GoogleTextInput";
 import * as SolidIcons from "react-native-heroicons/solid";
 import * as OutlineIcons from "react-native-heroicons/outline";
-
-interface SelectedPlace {
-  id: string;
-  name: string;
-  latitude?: number;
-  longitude?: number;
-  address?: string;
-}
+import usePlanTripStore, { TripPlace } from "@/store/planTripStore";
 
 const width = Dimensions.get("window").width;
 
 export default function PlanTrip() {
   const router = useRouter();
-  const [places, setPlaces] = useState<SelectedPlace[]>([]);
   const [currentLocation, setCurrentLocation] = useState<any>(null);
   const googleInputRef = useRef<GoogleTextInputRef>(null);
 
+  // Use the Zustand store
+  const { places, addPlace: addTripPlace, removePlace } = usePlanTripStore();
+
   const addPlace = () => {
     if (currentLocation) {
-      const newPlace = {
+      const newPlace: TripPlace = {
         id: currentLocation.place_id || `place-${Date.now()}`,
         name:
           currentLocation.structured_formatting?.main_text ||
@@ -43,9 +38,10 @@ export default function PlanTrip() {
         latitude: currentLocation.latitude,
         longitude: currentLocation.longitude,
         address: currentLocation.address,
+        geometry: currentLocation.geometry,
       };
 
-      setPlaces([...places, newPlace]);
+      addTripPlace(newPlace);
 
       // Clear the input after adding
       if (googleInputRef.current) {
@@ -56,10 +52,6 @@ export default function PlanTrip() {
     }
   };
 
-  const removePlace = (id: string) => {
-    setPlaces(places.filter((place) => place.id !== id));
-  };
-
   return (
     <SafeAreaView className="flex-1">
       <View className=" z-10">
@@ -67,7 +59,17 @@ export default function PlanTrip() {
           <GoogleTextInput
             containerStyle="flex-1"
             handlePress={(data) => {
-              setCurrentLocation(data);
+              // Create a location object with the data from GoogleTextInput
+              setCurrentLocation({
+                ...data,
+                place_id: `place-${Date.now()}`, // Generate a unique ID
+                geometry: {
+                  location: {
+                    lat: data.latitude,
+                    lng: data.longitude,
+                  },
+                },
+              });
             }}
           />
         </View>
