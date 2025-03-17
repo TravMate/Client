@@ -9,6 +9,7 @@ export interface TripPlace {
   longitude?: number;
   address?: string;
   geometry?: any;
+  distance?: number;
 }
 
 interface PlanTripState {

@@ -1,26 +1,24 @@
 import { Text, View, Image, TouchableOpacity, Dimensions } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomButton from "@/components/CustomButton";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import * as SolidIcons from "react-native-heroicons/solid";
 import "react-native-get-random-values";
 import PlanTrip from "@/components/PlanTrip";
+import usePlanTripStore from "@/store/planTripStore";
+import CalculateDistance from "@/components/CalculateDistance";
+import TripPlanner from "../calculateDistance";
 
 const width = Dimensions.get("window").width;
 
 const stepsConfig = [
   {
     component: () => <PlanTrip />,
+    // component: () => <TripPlanner />,
     title: "Choose Destination",
   },
   {
-    component: () => (
-      <View className="flex-1">
-        <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
-          Calculate distance
-        </Text>
-      </View>
-    ),
+    component: () => <CalculateDistance />,
     title: "Calculate Distance",
   },
   {
@@ -46,7 +44,16 @@ const stepsConfig = [
 ];
 
 const Trip = () => {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
+  const { places } = usePlanTripStore();
+
+  // Use useEffect to handle state changes based on places
+  useEffect(() => {
+    if (places.length > 0 && currentStep === 0) {
+      setCurrentStep(1);
+    }
+  }, [places, currentStep]);
 
   const handleStart = () => {
     setCurrentStep(1);
@@ -136,14 +143,14 @@ const Trip = () => {
           </View>
         </>
       ) : (
-        <View className="flex-1 p-5">
+        <View className="flex-1 px-5">
           {currentStep > 0 && stepsConfig[currentStep - 1].component()}
-          <View className="py-5">
+          <View className="py-2">
             <CustomButton
               title={currentStep === 4 ? "Finish" : "Next"}
               handlePress={handleNext}
-              containerStyles="w-full mx-auto min-h-[48px] bg-[#F98C53] rounded-xl"
-              textStyles="text-[#0F2650]"
+              containerStyles="w-full mx-auto min-h-[44px] bg-[#F98C53] rounded-xl"
+              textStyles="text-white"
             />
           </View>
         </View>
