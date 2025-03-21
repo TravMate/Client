@@ -7,14 +7,14 @@ import "react-native-get-random-values";
 import PlanTrip from "@/components/PlanTrip";
 import usePlanTripStore from "@/store/planTripStore";
 import CalculateDistance from "@/components/CalculateDistance";
-import TripPlanner from "../calculateDistance";
+import GooglePlacesAutocomplete from "@/components/Test";
 
 const width = Dimensions.get("window").width;
 
 const stepsConfig = [
   {
     component: () => <PlanTrip />,
-    // component: () => <TripPlanner />,
+    // component: () => <GooglePlacesAutocomplete />,
     title: "Choose Destination",
   },
   {

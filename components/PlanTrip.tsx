@@ -12,22 +12,23 @@ import {
   Keyboard,
   ActivityIndicator,
 } from "react-native";
-import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import "react-native-get-random-values";
 import { PlusCircleIcon } from "react-native-heroicons/solid";
-import GoogleTextInput, { GoogleTextInputRef } from "./GoogleTextInput";
+
 import * as SolidIcons from "react-native-heroicons/solid";
 import * as OutlineIcons from "react-native-heroicons/outline";
 import usePlanTripStore, { TripPlace } from "@/store/planTripStore";
 import { useRouteMatrix } from "@/hooks/useCalculateDistance";
 
+import PlaceSearchComponent from "./GoogleTextInput";
+
 const width = Dimensions.get("window").width;
 
 export default function PlanTrip() {
-  const router = useRouter();
   const [currentLocation, setCurrentLocation] = useState<any>(null);
-  const googleInputRef = useRef<GoogleTextInputRef>(null);
+
+  console.log("currentLocation", currentLocation);
 
   // Use the Zustand store
   const { places, addPlace: addTripPlace, removePlace } = usePlanTripStore();
@@ -48,20 +49,19 @@ export default function PlanTrip() {
         name:
           currentLocation.structured_formatting?.main_text ||
           currentLocation.address?.split(",")[0] ||
+          currentLocation.name ||
           "Selected Place",
+
         latitude: currentLocation.latitude,
         longitude: currentLocation.longitude,
         address: currentLocation.address,
         geometry: currentLocation.geometry,
+        distanceMeters: currentLocation.distanceMeters,
       };
 
       addTripPlace(newPlace);
 
       // Clear the input after adding
-      if (googleInputRef.current) {
-        googleInputRef.current.clear();
-      }
-
       setCurrentLocation(null);
 
       // Dismiss keyboard after adding a place
@@ -78,19 +78,17 @@ export default function PlanTrip() {
       <SafeAreaView className="flex-1">
         <View className="z-10">
           <View className="flex-row items-center justify-between w-full">
-            <GoogleTextInput
-              containerStyle="flex-1 pt-5"
-              handlePress={(data) => {
+            <PlaceSearchComponent
+              onPlaceSelect={(data: TripPlace) => {
                 setCurrentLocation({
                   ...data,
-                  place_id: `place-${Date.now()}`,
-                  geometry: {
-                    location: {
-                      lat: data.latitude,
-                      lng: data.longitude,
-                    },
-                  },
+                  id: `place-${Date.now()}`,
+                  latitude: data.latitude,
+                  longitude: data.longitude,
+                  name: data.name,
+                  distanceMeters: data.distanceMeters,
                 });
+                console.log("data", data);
               }}
             />
           </View>

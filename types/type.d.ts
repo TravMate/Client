@@ -52,23 +52,44 @@ interface PlusCode {
   global_code: string;
 }
 
+// export interface Place {
+//   business_status: string;
+//   geometry: Geometry;
+//   icon: string;
+//   icon_background_color: string;
+//   icon_mask_base_uri: string;
+//   name: string;
+//   opening_hours: OpeningHours;
+//   photos: Photo[];
+//   place_id: string;
+//   plus_code?: PlusCode; // Optional because not all places have a plus_code
+//   rating: number;
+//   reference: string;
+//   scope: string;
+//   types: string[];
+//   user_ratings_total: number;
+//   vicinity: string;
+// }
+
 export interface Place {
-  business_status: string;
-  geometry: Geometry;
-  icon: string;
-  icon_background_color: string;
-  icon_mask_base_uri: string;
-  name: string;
-  opening_hours: OpeningHours;
-  photos: Photo[];
-  place_id: string;
-  plus_code?: PlusCode; // Optional because not all places have a plus_code
-  rating: number;
-  reference: string;
-  scope: string;
+  id: string;
+  displayName: {
+    text: string;
+    languageCode: string;
+  };
+  location: {
+    latitude: number;
+    longitude: number;
+  };
   types: string[];
-  user_ratings_total: number;
-  vicinity: string;
+  rating?: number;
+  userRatingCount?: number;
+  photos?: Array<{
+    name: string;
+    widthPx: number;
+    heightPx: number;
+  }>;
+  formattedAddress: string;
 }
 
 export type PlacesResponse = Place[];

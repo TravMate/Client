@@ -24,8 +24,10 @@ export const fetchRouteMatrix = async (
       origin: {
         location: {
           latLng: {
-            latitude: userLocation.latitude,
-            longitude: userLocation.longitude,
+            // latitude: userLocation.latitude,
+            // longitude: userLocation.longitude,
+            latitude: 30.0444,
+            longitude: 31.2357,
           },
         },
       },
