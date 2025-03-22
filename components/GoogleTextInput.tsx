@@ -6,7 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
-  StyleSheet,
+  StyleSheet
 } from "react-native";
 
 import { Place } from "@/types/type";
@@ -36,7 +36,7 @@ const PlaceSearchComponent = ({ onPlaceSelect }: { onPlaceSelect: any }) => {
     data: suggestions,
     isLoading,
     isError,
-    error,
+    error
   } = useGoogleAutoComplete(debouncedInput, debouncedInput);
 
   const handleSelectPlace = (place: TripPlace) => {
@@ -115,12 +115,12 @@ const PlaceSearchComponent = ({ onPlaceSelect }: { onPlaceSelect: any }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    flex: 1,
+    flex: 1
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 16,
+    marginBottom: 16
   },
   input: {
     borderWidth: 1,
@@ -128,69 +128,71 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    marginBottom: 16,
+    marginBottom: 16
   },
   loadingContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 16
   },
   loadingText: {
     marginLeft: 8,
     fontSize: 14,
-    color: "#666",
+    color: "#666"
   },
   errorText: {
     color: "red",
-    marginBottom: 16,
+    marginBottom: 16
   },
   suggestionsContainer: {
-    marginTop: 8,
+    position: "absolute",
+    minHeight: 200,
+    backgroundColor: "white"
   },
   suggestionsTitle: {
     fontSize: 16,
     fontWeight: "600",
-    marginBottom: 8,
+    marginBottom: 8
   },
   suggestionItem: {
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: "#eee"
   },
   suggestionName: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "500"
   },
   suggestionDescription: {
     fontSize: 14,
     color: "#666",
-    marginTop: 4,
+    marginTop: 4
   },
   suggestionType: {
     fontSize: 12,
     color: "#999",
-    marginTop: 2,
+    marginTop: 2
   },
   selectedPlaceContainer: {
     marginTop: 24,
     padding: 16,
     backgroundColor: "#f8f8f8",
-    borderRadius: 8,
+    borderRadius: 8
   },
   selectedPlaceTitle: {
     fontSize: 16,
     fontWeight: "600",
-    marginBottom: 8,
+    marginBottom: 8
   },
   selectedPlaceName: {
     fontSize: 18,
-    fontWeight: "500",
+    fontWeight: "500"
   },
   selectedPlaceDescription: {
     fontSize: 14,
     color: "#666",
-    marginTop: 4,
-  },
+    marginTop: 4
+  }
 });
 
 export default PlaceSearchComponent;

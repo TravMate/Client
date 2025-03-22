@@ -7,7 +7,6 @@ import "react-native-get-random-values";
 import PlanTrip from "@/components/PlanTrip";
 import usePlanTripStore from "@/store/planTripStore";
 import CalculateDistance from "@/components/CalculateDistance";
-import GooglePlacesAutocomplete from "@/components/Test";
 
 const width = Dimensions.get("window").width;
 
@@ -15,11 +14,11 @@ const stepsConfig = [
   {
     component: () => <PlanTrip />,
     // component: () => <GooglePlacesAutocomplete />,
-    title: "Choose Destination",
+    title: "Choose Destination"
   },
   {
     component: () => <CalculateDistance />,
-    title: "Calculate Distance",
+    title: "Calculate Distance"
   },
   {
     component: () => (
@@ -29,7 +28,7 @@ const stepsConfig = [
         </Text>
       </View>
     ),
-    title: "Choose Tourguide",
+    title: "Choose Tourguide"
   },
   {
     component: () => (
@@ -39,8 +38,8 @@ const stepsConfig = [
         </Text>
       </View>
     ),
-    title: "Review & Confirm",
-  },
+    title: "Review & Confirm"
+  }
 ];
 
 const Trip = () => {
@@ -83,7 +82,7 @@ const Trip = () => {
                   marginLeft: 15,
                   backgroundColor: "#fff",
                   borderRadius: 25,
-                  padding: 8,
+                  padding: 8
                 }}
                 onPress={handleBack}
               >
@@ -93,10 +92,10 @@ const Trip = () => {
           headerTitle:
             currentStep > 0 ? stepsConfig[currentStep - 1].title : "",
           headerStyle: {
-            height: 75,
+            height: 75
           },
           headerTitleStyle: {
-            marginLeft: width / 2 - 145,
+            marginLeft: width / 2 - 145
           },
           headerBackground: () => (
             <View
@@ -105,18 +104,18 @@ const Trip = () => {
                 height: 4,
                 width: "100%",
                 position: "absolute",
-                bottom: 0,
+                bottom: 0
               }}
             >
               <View
                 style={{
                   backgroundColor: "#F98C53",
                   height: 4,
-                  width: `${(currentStep / 4) * 100}%`,
+                  width: `${(currentStep / 4) * 100}%`
                 }}
               />
             </View>
-          ),
+          )
         }}
       />
 
@@ -143,7 +142,7 @@ const Trip = () => {
           </View>
         </>
       ) : (
-        <View className="flex-1 px-5">
+        <View className="flex-1">
           {currentStep > 0 && stepsConfig[currentStep - 1].component()}
           <View className="py-2">
             <CustomButton
