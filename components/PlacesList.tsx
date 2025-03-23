@@ -24,7 +24,7 @@ const PlacesList = ({ data, title, containerStyle }: PlacesProps) => {
         }}
       >
         {data?.map((item) => (
-          <SmallPlaceCard item={item} key={item.place_id} />
+          <SmallPlaceCard item={item} key={item.id} />
         ))}
       </ScrollView>
     </View>

@@ -39,10 +39,11 @@ const SmallPlaceCard = ({ item }: SmallPlaceCardProps) => {
   const { addFavorite, removeFavorite, isFavorite } = useFavoriteStore();
 
   useEffect(() => {
-    isFavorite(item.place_id) ? setIsFav(true) : setIsFav(false);
-  }, [item.place_id]);
+    isFavorite(item.id) ? setIsFav(true) : setIsFav(false);
+  }, [item.id]);
 
-  const url = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${item.photos[0].photo_reference}&key=${API_KEY}`;
+  const url = `https://places.googleapis.com/v1/${item.photos[0].name}/media?maxHeightPx=400&maxWidthPx=400&key=${process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY}`;
+
   // useEffect(() => {
   // const fetchFreshPhotoUrl = async () => {
   //   try {
@@ -66,9 +67,9 @@ const SmallPlaceCard = ({ item }: SmallPlaceCardProps) => {
 
   const handleFavoritePress = () => {
     if (!isFav) {
-      addFavorite(item.place_id);
+      addFavorite(item.id);
     } else {
-      removeFavorite(item.place_id);
+      removeFavorite(item.id);
     }
     setIsFav(!isFav);
   };
@@ -140,7 +141,7 @@ const SmallPlaceCard = ({ item }: SmallPlaceCardProps) => {
             width: "85%",
           }}
         >
-          {item.name}
+          {item.displayName.text}
         </Text>
       </View>
 

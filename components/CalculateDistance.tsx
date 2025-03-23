@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  ActivityIndicator,
+  ActivityIndicator
 } from "react-native";
 import usePlanTripStore from "@/store/planTripStore";
 import * as SolidIcons from "react-native-heroicons/solid";
@@ -46,7 +46,7 @@ const CalculateDistance = () => {
 
       <FlatList
         data={routes}
-        keyExtractor={(item) => item.placeId}
+        keyExtractor={(item) => item.place.placeId}
         renderItem={({ item, index }) => (
           <View style={styles.distanceItem}>
             <View style={styles.iconContainer}>
@@ -59,7 +59,7 @@ const CalculateDistance = () => {
             <View style={styles.distanceInfo}>
               <Text style={styles.placeName}>
                 {index === 0 ? "Your Location" : "From previous location"} →{" "}
-                {item.placeName}
+                {item.place.structuredFormat.mainText.text}
               </Text>
               <View style={styles.detailsRow}>
                 <Text style={styles.distance}>{item.distance} km</Text>
@@ -75,20 +75,20 @@ const CalculateDistance = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 16
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
-    color: "#0F2650",
+    color: "#0F2650"
   },
   subtitle: {
     fontSize: 18,
     fontWeight: "600",
     marginTop: 16,
     marginBottom: 8,
-    color: "#0F2650",
+    color: "#0F2650"
   },
   totalContainer: {
     backgroundColor: "#F98C53",
@@ -96,17 +96,17 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "center"
   },
   totalLabel: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#fff",
+    color: "#fff"
   },
   totalDistance: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#fff",
+    color: "#fff"
   },
   distanceItem: {
     flexDirection: "row",
@@ -118,65 +118,65 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
-    elevation: 2,
+    elevation: 2
   },
   iconContainer: {
     marginRight: 12,
-    justifyContent: "center",
+    justifyContent: "center"
   },
   distanceInfo: {
-    flex: 1,
+    flex: 1
   },
   placeName: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "500"
   },
   detailsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 4,
+    marginTop: 4
   },
   distance: {
     fontSize: 14,
-    color: "#666",
+    color: "#666"
   },
   duration: {
     fontSize: 14,
     color: "#FF7043",
-    fontWeight: "500",
+    fontWeight: "500"
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: "#666",
+    color: "#666"
   },
   errorContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 16,
+    padding: 16
   },
   errorText: {
     fontSize: 16,
     color: "red",
-    textAlign: "center",
+    textAlign: "center"
   },
   emptyContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 16,
+    padding: 16
   },
   emptyText: {
     fontSize: 16,
     color: "#666",
-    textAlign: "center",
-  },
+    textAlign: "center"
+  }
 });
 
 export default CalculateDistance;

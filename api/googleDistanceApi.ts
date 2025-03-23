@@ -1,17 +1,14 @@
-import { TripPlace } from "@/store/planTripStore";
-import { LocationObject } from "expo-location";
+import { PlacePrediction } from "@/components/map/GooglePlacesAutoComplete";
 
 export interface RouteInfo {
-  placeId: string;
-  placeName: string;
+  place: PlacePrediction;
   distance: number;
-  duration: number;
 }
 
 export const fetchRouteMatrix = async (
   apiKey: string,
   userLocation: { latitude: number; longitude: number },
-  places: TripPlace[]
+  places: PlacePrediction[]
 ): Promise<RouteInfo[]> => {
   try {
     // Validate inputs
@@ -24,26 +21,24 @@ export const fetchRouteMatrix = async (
       origin: {
         location: {
           latLng: {
-            latitude: userLocation.latitude,
-            longitude: userLocation.longitude,
+            // latitude: userLocation.latitude,
+            // longitude: userLocation.longitude,
+            latitude: 30.0444,
+            longitude: 31.2357,
           },
         },
       },
       destination: {
-        location: {
-          latLng: {
-            latitude: places[places.length - 1].latitude,
-            longitude: places[places.length - 1].longitude,
-          },
-        },
+        // location: {
+        //   latLng: {
+        //     latitude: places[places.length - 1].latitude,
+        //     longitude: places[places.length - 1].longitude,
+        //   },
+        // },
+        placeId : places[places.length - 1].placeId
       },
       intermediates: places.slice(0, -1).map((place) => ({
-        location: {
-          latLng: {
-            latitude: place.latitude,
-            longitude: place.longitude,
-          },
-        },
+        placeId : place.placeId
       })),
       travelMode: "DRIVE",
       routingPreference: "TRAFFIC_AWARE",
@@ -110,10 +105,8 @@ export const fetchRouteMatrix = async (
     return places.map((place, index) => {
       const leg = legs[index];
       return {
-        placeId: place.id,
-        placeName: place.name,
+        place,
         distance: leg.distanceMeters / 1000, // Convert to km
-        duration: parseFloat((leg.duration.seconds / 60).toFixed(1)), // Convert to minutes
       };
     });
   } catch (error) {

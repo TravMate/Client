@@ -47,7 +47,7 @@ const PlaceDetails = () => {
   const [isFav, setIsFav] = useState(false);
   const route = useRoute();
   const data = route.params as PlaceDetailsProps;
-  const mapUrl = `https://maps.geoapify.com/v1/staticmap?style=osm-bright&width=600&height=400&center=lonlat:${placeDetails?.geometry.location.lng},${placeDetails?.geometry.location.lat}&zoom=13&apiKey=${geoapifyApiKey}`;
+  const mapUrl = `https://maps.geoapify.com/v1/staticmap?style=osm-bright&width=600&height=400&center=lonlat:${placeDetails?.location.longitude},${placeDetails?.location.latitude}&zoom=13&apiKey=${geoapifyApiKey}`;
   useEffect(() => {
     setPlaceDetails(data.placeData);
     setIsFav(data.isFav);
@@ -122,20 +122,20 @@ const PlaceDetails = () => {
             <Text className="text-xl"> {placeDetails?.rating}</Text>
             <Text className="font-bold text-lg"> | </Text>
             <Text className="text-xl">
-              {placeDetails?.user_ratings_total} reviews
+              {placeDetails?.userRatingCount} reviews
             </Text>
           </View>
         </View>
-        <Text className="text-xl pt-3">{placeDetails?.vicinity}</Text>
+        <Text className="text-xl pt-3">{placeDetails?.formattedAddress}</Text>
 
         {/* opening hours section */}
-        <View className="mt-2.5 mb-2.5 items-end">
+        {/* <View className="mt-2.5 mb-2.5 items-end">
           {placeDetails?.opening_hours?.open_now.toString() ? (
             <Text className="text-lg font-bold text-lime-500">Open Now</Text>
           ) : (
             <Text className="text-lg font-bold text-red-500">Closed</Text>
           )}
-        </View>
+        </View> */}
 
         {/* activities section */}
         <View className="mt-2">

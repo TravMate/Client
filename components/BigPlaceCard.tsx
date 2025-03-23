@@ -36,11 +36,12 @@ const BigPlaceCard = ({ item, variation = "large" }: PlaceCardProps) => {
 
   const { addFavorite, removeFavorite, isFavorite } = useFavoriteStore();
 
-  const url = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${item.photos[0].photo_reference}&key=${process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY}`;
+  // console.log(item.id);
 
+  const url = `https://places.googleapis.com/v1/${item.photos[0].name}/media?maxHeightPx=400&maxWidthPx=400&key=${process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY}`;
   useEffect(() => {
-    isFavorite(item?.place_id) ? setIsFav(true) : setIsFav(false);
-  }, [item.place_id]);
+    isFavorite(item?.id) ? setIsFav(true) : setIsFav(false);
+  }, [item.id]);
 
   // useEffect(() => {
   //   const fetchFreshPhotoUrl = async () => {
@@ -64,9 +65,9 @@ const BigPlaceCard = ({ item, variation = "large" }: PlaceCardProps) => {
 
   const handleFavoritePress = () => {
     if (!isFav) {
-      addFavorite(item.place_id);
+      addFavorite(item.id);
     } else {
-      removeFavorite(item.place_id);
+      removeFavorite(item.id);
     }
     setIsFav(!isFav);
   };
@@ -139,8 +140,9 @@ const BigPlaceCard = ({ item, variation = "large" }: PlaceCardProps) => {
             color: "white",
             width: variation === "large" ? "74%" : "100%",
           }}
+          numberOfLines={1}
         >
-          {item.vicinity}
+          {item.formattedAddress}
         </Text>
         <Text
           className={`text-slate-100 font-bold ${
@@ -151,7 +153,7 @@ const BigPlaceCard = ({ item, variation = "large" }: PlaceCardProps) => {
             width: variation === "large" ? "74%" : "100%",
           }}
         >
-          {item.name}
+          {item.displayName.text}
         </Text>
       </View>
 
