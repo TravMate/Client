@@ -1,4 +1,11 @@
-import { Text, View, Image, TouchableOpacity, Dimensions } from "react-native";
+import {
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  StyleSheet,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import CustomButton from "@/components/CustomButton";
 import { Stack, useRouter } from "expo-router";
@@ -14,11 +21,11 @@ const stepsConfig = [
   {
     component: () => <PlanTrip />,
     // component: () => <GooglePlacesAutocomplete />,
-    title: "Choose Destination"
+    title: "Choose Destination",
   },
   {
     component: () => <CalculateDistance />,
-    title: "Calculate Distance"
+    title: "Calculate Distance",
   },
   {
     component: () => (
@@ -28,7 +35,7 @@ const stepsConfig = [
         </Text>
       </View>
     ),
-    title: "Choose Tourguide"
+    title: "Choose Tourguide",
   },
   {
     component: () => (
@@ -38,8 +45,8 @@ const stepsConfig = [
         </Text>
       </View>
     ),
-    title: "Review & Confirm"
-  }
+    title: "Review & Confirm",
+  },
 ];
 
 const Trip = () => {
@@ -82,7 +89,7 @@ const Trip = () => {
                   marginLeft: 15,
                   backgroundColor: "#fff",
                   borderRadius: 25,
-                  padding: 8
+                  padding: 8,
                 }}
                 onPress={handleBack}
               >
@@ -92,10 +99,10 @@ const Trip = () => {
           headerTitle:
             currentStep > 0 ? stepsConfig[currentStep - 1].title : "",
           headerStyle: {
-            height: 75
+            height: 75,
           },
           headerTitleStyle: {
-            marginLeft: width / 2 - 145
+            marginLeft: width / 2 - 145,
           },
           headerBackground: () => (
             <View
@@ -104,18 +111,18 @@ const Trip = () => {
                 height: 4,
                 width: "100%",
                 position: "absolute",
-                bottom: 0
+                bottom: 0,
               }}
             >
               <View
                 style={{
                   backgroundColor: "#F98C53",
                   height: 4,
-                  width: `${(currentStep / 4) * 100}%`
+                  width: `${(currentStep / 4) * 100}%`,
                 }}
               />
             </View>
-          )
+          ),
         }}
       />
 
@@ -142,13 +149,15 @@ const Trip = () => {
           </View>
         </>
       ) : (
-        <View className="flex-1">
-          {currentStep > 0 && stepsConfig[currentStep - 1].component()}
-          <View className="py-2">
+        <View className="flex-1 h-[100%]">
+          <View style={styles.currentStep}>
+            {currentStep > 0 && stepsConfig[currentStep - 1].component()}
+          </View>
+          <View className="pb-2 mx-5">
             <CustomButton
               title={currentStep === 4 ? "Finish" : "Next"}
               handlePress={handleNext}
-              containerStyles="w-full mx-auto min-h-[44px] bg-[#F98C53] rounded-xl"
+              containerStyles="w-full mx-auto min-h-[43px] bg-[#F98C53] rounded-xl"
               textStyles="text-white"
             />
           </View>
@@ -159,3 +168,9 @@ const Trip = () => {
 };
 
 export default Trip;
+
+const styles = StyleSheet.create({
+  currentStep: {
+    flex: 1,
+  },
+});
