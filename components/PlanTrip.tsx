@@ -6,7 +6,7 @@ import {
   FlatList,
   StyleSheet,
   Dimensions,
-  ListRenderItemInfo
+  ListRenderItemInfo,
 } from "react-native";
 import "react-native-get-random-values";
 
@@ -17,16 +17,13 @@ import { useRouteMatrix } from "@/hooks/useCalculateDistance";
 import MapView from "react-native-maps";
 import {
   GooglePlacesAutoComplete,
-  PlacePrediction
+  PlacePrediction,
 } from "@/components/map/GooglePlacesAutoComplete";
 
 const width = Dimensions.get("window").width;
+const height = Dimensions.get("window").height;
 
 export default function PlanTrip() {
-  const [currentLocation, setCurrentLocation] = useState<any>(null);
-
-  console.log("currentLocation", currentLocation);
-
   // Use the Zustand store
   const { places, addPlace: addTripPlace, removePlace } = usePlanTripStore();
   const { data: routes, isLoading, error } = useRouteMatrix(places);
@@ -76,7 +73,7 @@ export default function PlanTrip() {
   return (
     <View style={styles.container}>
       <View>
-        <MapView style={{ width: "100%", height: 300 }} />
+        <MapView style={{ width: "100%", height: 200 }} />
       </View>
 
       <View style={styles.content}>
@@ -86,6 +83,9 @@ export default function PlanTrip() {
         />
         {places && (
           <FlatList
+            showsVerticalScrollIndicator={false}
+            // className="mt-4 h-[120px] bg-red-500"
+            style={styles.placesList}
             data={places}
             renderItem={renderItem}
             ListEmptyComponent={
@@ -105,9 +105,15 @@ export default function PlanTrip() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 20
+    // paddingVertical: 20,
+    // height: height,
   },
   content: {
-    padding: 20
-  }
+    padding: 20,
+  },
+  placesList: {
+    marginTop: 10,
+    height: "55%",
+    // backgroundColor: "red",
+  },
 });
