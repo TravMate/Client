@@ -35,7 +35,11 @@ const BigPlaceCard = ({ item, variation = "large" }: PlaceCardProps) => {
 
   const { addFavorite, removeFavorite, isFavorite } = useFavoriteStore();
 
-  const url = `https://places.googleapis.com/v1/${item.photos[0].name}/media?maxHeightPx=400&maxWidthPx=400&key=${process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY}`;
+  const url = `https://places.googleapis.com/v1/${
+    item.photos ? item.photos[0].name : ""
+  }/media?maxHeightPx=400&maxWidthPx=400&key=${
+    process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY
+  }`;
   useEffect(() => {
     isFavorite(item?.id) ? setIsFav(true) : setIsFav(false);
   }, [item.id]);
