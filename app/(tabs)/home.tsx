@@ -28,18 +28,18 @@ const home = () => {
           Commented out to save requests
         </Text>
       </View>
-      {/* <View className="flex-1 pt-6">
+      <View className="flex-1 pt-6">
         <Text className="text-2xl font-bold mb-5 ml-5">Places near to you</Text>
-        <SwipList data={data} />
+        <SwipList data={data || []} />
       </View>
 
       <View className="flex-1">
-        <PlacesList data={data} title="Places in this City" />
+        <PlacesList data={data || []} title="Places in this City" />
       </View>
 
       <View className="flex-1">
-        <PlacesList data={data} title="Explore the Country" />
-      </View> */}
+        <PlacesList data={data || []} title="Explore the Country" />
+      </View>
     </ScrollView>
   );
 };

@@ -90,6 +90,36 @@ export interface Place {
     heightPx: number;
   }>;
   formattedAddress: string;
+  websiteUri?: string;
+  regularOpeningHours?: {
+    periods: Array<{
+      open: {
+        day: number;
+        hour: number;
+        minute: number;
+      };
+      close: {
+        day: number;
+        hour: number;
+        minute: number;
+      };
+    }>;
+    weekdayDescriptions: string[];
+  };
+  editorialSummary?: {
+    text: string;
+    languageCode: string;
+  };
+  priceLevel?: string;
+  reviews?: Array<{
+    name: string;
+    rating: number;
+    text: {
+      text: string;
+      languageCode: string;
+    };
+    relativePublishTimeDescription: string;
+  }>;
 }
 
 export type PlacesResponse = Place[];

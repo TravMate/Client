@@ -32,36 +32,13 @@ const SMALL_CARD_WIDTH = (width - (HORIZONTAL_PADDING * 2 + CARD_GAP)) / 2;
 const BigPlaceCard = ({ item, variation = "large" }: PlaceCardProps) => {
   const navigation = useNavigation<PlaceDetailsNavigationProp>();
   const [isFav, setIsFav] = useState(false);
-  // const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
   const { addFavorite, removeFavorite, isFavorite } = useFavoriteStore();
-
-  // console.log(item.id);
 
   const url = `https://places.googleapis.com/v1/${item.photos[0].name}/media?maxHeightPx=400&maxWidthPx=400&key=${process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY}`;
   useEffect(() => {
     isFavorite(item?.id) ? setIsFav(true) : setIsFav(false);
   }, [item.id]);
-
-  // useEffect(() => {
-  //   const fetchFreshPhotoUrl = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `https://maps.googleapis.com/maps/api/place/details/json?place_id=${item.place_id}&fields=photos&key=${process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY}`
-  //       );
-  //       const data = await response.json();
-
-  //       if (data.result?.photos?.[0]?.photo_reference) {
-  //         const newPhotoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${data.result.photos[0].photo_reference}&key=${process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY}`;
-  //         setPhotoUrl(newPhotoUrl);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching fresh photo URL:", error);
-  //     }
-  //   };
-
-  //   fetchFreshPhotoUrl();
-  // }, [item.place_id]);
 
   const handleFavoritePress = () => {
     if (!isFav) {
