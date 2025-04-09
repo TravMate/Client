@@ -111,23 +111,25 @@ const BigPlaceCard = ({ item, variation = "large" }: PlaceCardProps) => {
           width: "100%",
         }}
       >
-        <Text
-          className="text-md font-bold"
-          style={{
-            color: "white",
-            width: variation === "large" ? "74%" : "100%",
-          }}
-          numberOfLines={1}
-        >
-          {item.formattedAddress}
-        </Text>
+        {variation === "large" && (
+          <Text
+            className="text-md font-bold"
+            style={{
+              color: "white",
+              width: variation === "large" ? "74%" : "100%",
+            }}
+            numberOfLines={1}
+          >
+            {item.formattedAddress}
+          </Text>
+        )}
         <Text
           className={`text-slate-100 font-bold ${
             variation === "small" ? "text-lg" : "text-2xl"
           }`}
           style={{
             color: "white",
-            width: variation === "large" ? "74%" : "100%",
+            width: variation === "large" ? "74%" : "90%",
           }}
         >
           {item.displayName.text}
