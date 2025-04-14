@@ -3,6 +3,12 @@ import { PlacePrediction } from "@/components/map/GooglePlacesAutoComplete";
 export interface RouteInfo {
   place: PlacePrediction;
   distance: number;
+  polyline?: string; // Added for route drawing
+  legs?: Array<{
+    startLocation: { latLng: { latitude: number; longitude: number } };
+    endLocation: { latLng: { latitude: number; longitude: number } };
+    polyline: string;
+  }>;
 }
 
 export const fetchRouteMatrix = async (
@@ -16,29 +22,20 @@ export const fetchRouteMatrix = async (
     if (!userLocation) throw new Error("Missing user location");
     if (!places?.length) throw new Error("No places provided");
 
-    // Use correct format for Google Routes API V2
     const requestBody = {
       origin: {
         location: {
           latLng: {
-            // latitude: userLocation.latitude,
-            // longitude: userLocation.longitude,
             latitude: 30.0444,
             longitude: 31.2357,
           },
         },
       },
       destination: {
-        // location: {
-        //   latLng: {
-        //     latitude: places[places.length - 1].latitude,
-        //     longitude: places[places.length - 1].longitude,
-        //   },
-        // },
-        placeId : places[places.length - 1].placeId
+        placeId: places[places.length - 1].placeId,
       },
       intermediates: places.slice(0, -1).map((place) => ({
-        placeId : place.placeId
+        placeId: place.placeId,
       })),
       travelMode: "DRIVE",
       routingPreference: "TRAFFIC_AWARE",
@@ -46,8 +43,6 @@ export const fetchRouteMatrix = async (
       languageCode: "en-US",
       units: "METRIC",
     };
-
-    console.log("Request body:", JSON.stringify(requestBody));
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -60,7 +55,7 @@ export const fetchRouteMatrix = async (
           "Content-Type": "application/json",
           "X-Goog-Api-Key": apiKey,
           "X-Goog-FieldMask":
-            "routes.duration,routes.distanceMeters,routes.legs",
+            "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline,routes.legs.distanceMeters,routes.legs.duration,routes.legs.polyline.encodedPolyline,routes.legs.steps.polyline.encodedPolyline,routes.legs.startLocation,routes.legs.endLocation",
         },
         body: JSON.stringify(requestBody),
         signal: controller.signal,
@@ -69,46 +64,32 @@ export const fetchRouteMatrix = async (
 
     clearTimeout(timeoutId);
 
-    // Log response details
-    console.log("Response status:", response.status);
-    console.log("Response content-type:", response.headers.get("content-type"));
-
-    // Handle non-JSON responses
-    const contentType = response.headers.get("content-type");
-    if (!contentType?.includes("application/json")) {
-      const responseText = await response.text();
-      console.error(
-        "Non-JSON response:",
-        responseText.substring(0, 200) + "..."
-      );
-      throw new Error(`Invalid response format: ${contentType}`);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || `HTTP ${response.status}`);
     }
 
     const data = await response.json();
-    console.log(
-      "Response data:",
-      JSON.stringify(data).substring(0, 200) + "..."
-    );
 
-    if (!response.ok) {
-      const errorMessage = data.error?.message || `HTTP ${response.status}`;
-      throw new Error(`API Error: ${errorMessage}`);
+    if (!data.routes?.[0]) {
+      throw new Error("No routes found in response");
     }
 
-    if (!data.routes || !data.routes[0] || !data.routes[0].legs) {
-      throw new Error("Invalid response format: missing routes or legs");
-    }
+    const route = data.routes[0];
+    const legs = route.legs || [];
 
-    const legs = data.routes[0].legs;
-
-    // Process route data
-    return places.map((place, index) => {
-      const leg = legs[index];
-      return {
-        place,
-        distance: leg.distanceMeters / 1000, // Convert to km
-      };
-    });
+    return places.map((place, index) => ({
+      place,
+      distance: legs[index]?.distanceMeters
+        ? legs[index].distanceMeters / 1000
+        : 0,
+      polyline: route.polyline?.encodedPolyline, // Full route polyline
+      legs: legs.map((leg) => ({
+        startLocation: leg.startLocation,
+        endLocation: leg.endLocation,
+        polyline: leg.polyline?.encodedPolyline,
+      })),
+    }));
   } catch (error) {
     console.error("Route matrix fetch error:", error);
     throw new Error(

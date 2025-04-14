@@ -5,7 +5,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import React, { FC, useEffect, useState } from "react";
 import _ from "lodash";
@@ -24,16 +24,16 @@ interface Props {
 }
 export const GooglePlacesAutoComplete: FC<Props> = ({
   onPressPlace,
-  center
+  center,
 }) => {
   const [text, setText] = useState("");
   const {
     data,
     isPending,
     mutateAsync: onSearch,
-    reset
+    reset,
   } = useMutation({
-    mutationFn: getGooglePlaces
+    mutationFn: getGooglePlaces,
   });
 
   const debouncedFetch = _.debounce(onSearch, 500);
@@ -43,7 +43,7 @@ export const GooglePlacesAutoComplete: FC<Props> = ({
     if (val.trim().length > 2) {
       debouncedFetch({
         searchText: val,
-        center
+        center,
       });
     }
     if (val.trim().length === 0) {
@@ -103,23 +103,23 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 10
+    borderRadius: 10,
   },
   content: {
     padding: 10,
     backgroundColor: "#ccc",
     position: "absolute",
-    borderRadius: 5,
+    borderRadius: 7,
     top: 45,
     left: 0,
     right: 0,
-    zIndex: 9999
+    zIndex: 9999,
   },
   placeItem: {
-    padding: 5,
+    padding: 7,
     borderBottomWidth: 0.5,
-    borderBottomColor: "#ddd"
-  }
+    borderBottomColor: "#ddd",
+  },
 });
 
 // request
@@ -142,18 +142,18 @@ async function getGooglePlaces(params: PlacesParams) {
         locationBias: {
           circle: {
             center: params.center,
-            radius: params.radius || 15000
-          }
-        }
+            radius: params.radius || 15000,
+          },
+        },
       },
       {
         headers: {
           "Content-Type": "application/json",
           "X-Goog-Api-Key": PLACES_API_KEY,
-          "X-Goog-FieldMask": "*"
+          "X-Goog-FieldMask": "*",
           // "suggestions.placePrediction.placeId,suggestions.placePrediction.text,suggestions.placePrediction.structuredFormat,suggestions.placePrediction.types,suggestions.placePrediction.distanceMeters",
         },
-        timeout: 5000
+        timeout: 5000,
       }
     );
     return response.data;

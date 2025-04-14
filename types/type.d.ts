@@ -52,25 +52,6 @@ interface PlusCode {
   global_code: string;
 }
 
-// export interface Place {
-//   business_status: string;
-//   geometry: Geometry;
-//   icon: string;
-//   icon_background_color: string;
-//   icon_mask_base_uri: string;
-//   name: string;
-//   opening_hours: OpeningHours;
-//   photos: Photo[];
-//   place_id: string;
-//   plus_code?: PlusCode; // Optional because not all places have a plus_code
-//   rating: number;
-//   reference: string;
-//   scope: string;
-//   types: string[];
-//   user_ratings_total: number;
-//   vicinity: string;
-// }
-
 export interface Place {
   id: string;
   displayName: {
@@ -120,6 +101,9 @@ export interface Place {
     };
     relativePublishTimeDescription: string;
   }>;
+  name: string;
+  description: string;
+  primaryType: string;
 }
 
 export type PlacesResponse = Place[];

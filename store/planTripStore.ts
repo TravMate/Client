@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { PlacePrediction } from "@/components/map/GooglePlacesAutoComplete";
+import { Place } from "@/types/type";
 
 export interface TripPlace {
   id: string;
@@ -11,6 +12,7 @@ export interface TripPlace {
   address?: string;
   geometry?: any;
   distanceMeters?: number;
+  description?: string;
 }
 
 interface PlanTripState {
@@ -26,7 +28,10 @@ const usePlanTripStore = create<PlanTripState>()(
       places: [],
       addPlace: (place) => {
         set((state) => ({
-          places: [...state.places, place],
+          // Check if the place already exists in the list
+          places: state.places.some((p) => p.placeId === place.placeId)
+            ? state.places
+            : [...state.places, place],
         }));
       },
       removePlace: (id: string) => {

@@ -20,8 +20,7 @@ const width = Dimensions.get("window").width;
 const stepsConfig = [
   {
     component: () => <PlanTrip />,
-    // component: () => <GooglePlacesAutocomplete />,
-    title: "Choose Destination",
+    title: "Plan Your Trip",
   },
   {
     component: () => <CalculateDistance />,
@@ -89,6 +88,7 @@ const Trip = () => {
                   marginLeft: 15,
                   backgroundColor: "#fff",
                   borderRadius: 25,
+                  // marginRight: 15,
                   padding: 8,
                 }}
                 onPress={handleBack}
@@ -99,11 +99,10 @@ const Trip = () => {
           headerTitle:
             currentStep > 0 ? stepsConfig[currentStep - 1].title : "",
           headerStyle: {
-            height: 75,
+            height: 70,
           },
-          headerTitleStyle: {
-            marginLeft: width / 2 - 145,
-          },
+          headerTitleAlign: "center",
+
           headerBackground: () => (
             <View
               style={{
@@ -149,15 +148,16 @@ const Trip = () => {
           </View>
         </>
       ) : (
-        <View className="flex-1 h-[100%]">
-          <View style={styles.currentStep}>
+        <View className="flex-1 flex-col">
+          <View className="flex-1">
             {currentStep > 0 && stepsConfig[currentStep - 1].component()}
           </View>
-          <View className="pb-2 mx-5">
+
+          <View className="px-8 py-2 mt-auto">
             <CustomButton
               title={currentStep === 4 ? "Finish" : "Next"}
               handlePress={handleNext}
-              containerStyles="w-full mx-auto min-h-[43px] bg-[#F98C53] rounded-xl"
+              containerStyles="w-full mx-auto min-h-[46px] bg-[#F98C53] rounded-xl"
               textStyles="text-white"
             />
           </View>

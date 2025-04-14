@@ -81,7 +81,9 @@ const Onboarding = () => {
             ? router.replace("/(auth)/sign_up")
             : swiperRef.current?.scrollBy(1)
         }
-        containerStyles={"w-11/12 mt-10 mb-8 bg-[#F98C53] rounded-xl"}
+        containerStyles={
+          "w-11/12 mt-10 mb-8 bg-[#F98C53] rounded-xl min-h-[62px]"
+        }
         textStyles="text-[#023E8A]"
       />
     </SafeAreaView>
