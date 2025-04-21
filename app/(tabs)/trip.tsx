@@ -153,12 +153,27 @@ const Trip = () => {
           </View>
 
           <View className="px-8 py-2 mt-auto">
-            <CustomButton
-              title={currentStep === 4 ? "Finish" : "Next"}
-              handlePress={handleNext}
-              containerStyles="w-full mx-auto min-h-[46px] bg-[#F98C53] rounded-xl"
-              textStyles="text-white"
-            />
+            {currentStep === 2 ? (
+              <View className="flex-row items-center justify-between mb-4">
+                <View>
+                  <Text className="text-gray-600 text-lg">Total price</Text>
+                  <Text className="text-3xl font-bold">$210</Text>
+                </View>
+                <CustomButton
+                  title="Next"
+                  handlePress={handleNext}
+                  containerStyles="w-[45%] ml-auto min-h-[46px] bg-[#F98C53] rounded-xl"
+                  textStyles="text-white"
+                />
+              </View>
+            ) : (
+              <CustomButton
+                title={currentStep === 4 ? "Finish" : "Next"}
+                handlePress={handleNext}
+                containerStyles="w-full mx-auto min-h-[46px] bg-[#F98C53] rounded-xl"
+                textStyles="text-white"
+              />
+            )}
           </View>
         </View>
       )}
