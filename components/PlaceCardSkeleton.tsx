@@ -30,7 +30,6 @@ const PlaceCardSkeleton = ({ size }: PlaceCardSkeletonProps) => {
 };
 
 export default PlaceCardSkeleton;
-
 const styles = StyleSheet.create({
   smallContainer: {
     borderRadius: 10,

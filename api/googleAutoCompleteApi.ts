@@ -80,7 +80,6 @@ export const fetchAutocompletePlacesNew = async (
       .map(({ placePrediction }) => {
         // Use non-null assertion after filtering
         const pp = placePrediction!;
-
         return {
           id: pp.placeId!,
           name: pp.structuredFormat!.mainText!.text!,

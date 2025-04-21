@@ -93,8 +93,6 @@ export default function PlanTrip() {
             const location = leg.startLocation?.latLng ||
               leg.endLocation?.latLng || { latitude: 0, longitude: 0 };
 
-            // console.log(location.latitude, location.longitude);
-            // console.log(routes);
             return (
               <Marker
                 key={`marker-${index}`}
