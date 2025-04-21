@@ -88,6 +88,7 @@ const Trip = () => {
                   marginLeft: 15,
                   backgroundColor: "#fff",
                   borderRadius: 25,
+                  // marginRight: 15,
                   padding: 8,
                 }}
                 onPress={handleBack}
