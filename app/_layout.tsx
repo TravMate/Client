@@ -1,6 +1,5 @@
 import { Stack } from "expo-router";
 import "../global.css";
-import "../utils/reanimated-config";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "react-native";
 import { useEffect } from "react";
