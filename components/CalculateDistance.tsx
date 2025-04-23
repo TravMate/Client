@@ -15,6 +15,7 @@ import PlaceImage from "./PlaceImage";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 
 const { width } = Dimensions.get("window");
+const height = Dimensions.get("window").height;
 
 const PlaceCard = ({ place, distance, index, totalPlaces }: any) => {
   const estimatedPrice = 210;
@@ -167,84 +168,87 @@ const CalculateDistance = () => {
             {isLoading ? (
               <SkeletonCard />
             ) : (
-              <View style={styles.card}>
-                {/* Image Section */}
-                <View style={styles.imageContainer}>
-                  <PlaceImage
-                    placeId={item.place.placeId}
-                    height={width * 0.5}
-                  />
-                </View>
+              <View style={styles.cardContainer}>
+                <View style={styles.card}>
+                  {/* Image Section */}
+                  <View style={styles.imageContainer}>
+                    <PlaceImage
+                      placeId={item.place.placeId}
+                      height={width * 0.5}
+                    />
+                  </View>
 
-                <View style={styles.placeInfo}>
-                  <Text style={styles.placeName}>
-                    {item.place.structuredFormat.mainText.text}
-                  </Text>
-                  <View style={styles.locationRow}>
-                    <SolidIcons.MapPinIcon size={16} color="#666" />
-                    <Text style={styles.locationText}>
-                      {index === 0
-                        ? "From your location"
-                        : `From ${
-                            routes[index - 1].place.structuredFormat.mainText
-                              .text
-                          }`}
+                  <View style={styles.placeInfo}>
+                    <Text style={styles.placeName}>
+                      {item.place.structuredFormat.mainText.text}
                     </Text>
-                  </View>
-                </View>
-
-                <View style={styles.statsContainer}>
-                  <View style={styles.statBox}>
-                    <Text style={styles.statLabel}>Distance</Text>
-                    <Text style={styles.statValue}>
-                      {item.distance.toFixed(1)}km
-                    </Text>
-                  </View>
-                  <View style={styles.statBox}>
-                    <Text style={styles.statLabel}>Est. Price</Text>
-                    <Text style={styles.statValue}>${estimatedPrice}</Text>
-                  </View>
-                  <View style={styles.statBox}>
-                    <Text style={styles.statLabel}>Stop</Text>
-                    <Text style={styles.statValue}>
-                      {index + 1}/{routes.length}
-                    </Text>
-                  </View>
-                </View>
-
-                <View style={styles.descriptionContainer}>
-                  <Text style={styles.descriptionTitle}>Route Details</Text>
-                  <View style={styles.timelineContainer}>
-                    <View style={styles.timelineLeft}>
-                      <View
-                        style={[
-                          styles.timelineDot,
-                          { backgroundColor: "#FF9457" },
-                        ]}
-                      />
-                      <View style={styles.timelineLine} />
-                      <View
-                        style={[
-                          styles.timelineDot,
-                          { backgroundColor: "#0F2650" },
-                        ]}
-                      />
-                    </View>
-                    <View style={styles.timelineRight}>
-                      <Text style={styles.timelineText}>
+                    <View style={styles.locationRow}>
+                      <SolidIcons.MapPinIcon size={16} color="#666" />
+                      <Text style={styles.locationText}>
                         {index === 0
-                          ? "Your location"
-                          : routes[index - 1].place.structuredFormat
-                              .secondaryText.text}
+                          ? "From your location"
+                          : `From ${
+                              routes?.[index - 1].place.structuredFormat
+                                .mainText.text
+                            }`}
                       </Text>
-                      <Text
-                        style={[
-                          styles.timelineText,
-                          styles.timelineDestination,
-                        ]}
-                      >
-                        {item.place.structuredFormat.secondaryText.text}
+                    </View>
+                  </View>
+
+                  <View style={styles.statsContainer}>
+                    <View style={styles.statBox}>
+                      <Text style={styles.statLabel}>Distance</Text>
+                      <Text style={styles.statValue}>
+                        {item.distance.toFixed(1)}km
                       </Text>
+                    </View>
+                    <View style={styles.statBox}>
+                      <Text style={styles.statLabel}>Est. Price</Text>
+                      <Text style={styles.statValue}>${estimatedPrice}</Text>
+                    </View>
+                    <View style={styles.statBox}>
+                      <Text style={styles.statLabel}>Stop</Text>
+                      <Text style={styles.statValue}>
+                        {index + 1}/{routes?.length}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.descriptionContainer}>
+                    <Text style={styles.descriptionTitle}>Route Details</Text>
+                    <View style={styles.timelineContainer}>
+                      <View style={styles.timelineLeft}>
+                        <View
+                          style={[
+                            styles.timelineDot,
+                            { backgroundColor: "#FF9457" },
+                          ]}
+                        />
+                        <View style={styles.timelineLine} />
+                        <View
+                          style={[
+                            styles.timelineDot,
+                            { backgroundColor: "#0F2650" },
+                          ]}
+                        />
+                      </View>
+                      <View style={styles.timelineRight}>
+                        <Text style={styles.timelineText}>
+                          {index === 0
+                            ? "Your location"
+                            : routes?.[index - 1].place.structuredFormat
+                                .secondaryText.text}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.timelineText,
+                            styles.timelineDestination,
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {item.place.structuredFormat.secondaryText.text}
+                        </Text>
+                      </View>
                     </View>
                   </View>
                 </View>
@@ -264,6 +268,9 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  cardContainer: {
+    height: height * 0.7,
   },
   card: {
     margin: 10,
@@ -297,7 +304,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   placeName: {
-    fontSize: 24,
+    fontSize: 21,
     fontWeight: "bold",
     color: "#0F2650",
     marginBottom: 8,
