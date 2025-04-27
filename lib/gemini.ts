@@ -17,7 +17,6 @@ export async function generatePlaceRecommendations(
   placeAddress: string
 ): Promise<PlaceRecommendations> {
   try {
-    // Use gemini-1.0-pro instead of gemini-pro
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const prompt = `As an AI travel assistant, please provide detailed recommendations for visiting ${placeName} located at ${placeAddress}. Format the response in JSON with the following structure:
