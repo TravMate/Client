@@ -8,6 +8,8 @@ import {
   ScrollView,
   Pressable,
   TextInput,
+  Modal,
+  ActivityIndicator,
 } from "react-native";
 import usePlanTripStore from "@/store/planTripStore";
 import * as SolidIcons from "react-native-heroicons/solid";
@@ -15,9 +17,24 @@ import { useRouteMatrix } from "@/hooks/useCalculateDistance";
 import Carousel from "react-native-reanimated-carousel";
 import PlaceImage from "./PlaceImage";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
+import { generatePlaceRecommendations } from "@/lib/gemini";
 
 const { width } = Dimensions.get("window");
 const height = Dimensions.get("window").height;
+
+interface Recommendations {
+  visitTips: string;
+  budgetTips: string;
+  photoSpots: string;
+  bestTimes: string;
+}
+
+interface RecommendationsModalProps {
+  visible: boolean;
+  onClose: () => void;
+  recommendations: Recommendations | null;
+  isLoading: boolean;
+}
 
 const DurationSelector = ({
   duration,
@@ -115,11 +132,113 @@ const DurationSelector = ({
   );
 };
 
+const RecommendationsModal = ({
+  visible,
+  onClose,
+  recommendations,
+  isLoading,
+}: RecommendationsModalProps) => {
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>AI Recommendations</Text>
+            <TouchableOpacity onPress={onClose}>
+              <SolidIcons.XMarkIcon size={24} color="#0F2650" />
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView style={styles.modalBody}>
+            {isLoading ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#0F2650" />
+                <Text style={styles.loadingText}>
+                  Generating recommendations...
+                </Text>
+              </View>
+            ) : (
+              <>
+                <View style={styles.recommendationSection}>
+                  <Text style={styles.sectionTitle}>🎯 Visit Tips</Text>
+                  <Text style={styles.recommendationText}>
+                    {recommendations?.visitTips}
+                  </Text>
+                </View>
+
+                <View style={styles.recommendationSection}>
+                  <Text style={styles.sectionTitle}>💰 Budget Tips</Text>
+                  <Text style={styles.recommendationText}>
+                    {recommendations?.budgetTips}
+                  </Text>
+                </View>
+
+                <View style={styles.recommendationSection}>
+                  <Text style={styles.sectionTitle}>📸 Photo Spots</Text>
+                  <Text style={styles.recommendationText}>
+                    {recommendations?.photoSpots}
+                  </Text>
+                </View>
+
+                <View style={styles.recommendationSection}>
+                  <Text style={styles.sectionTitle}>⏰ Best Times</Text>
+                  <Text style={styles.recommendationText}>
+                    {recommendations?.bestTimes}
+                  </Text>
+                </View>
+              </>
+            )}
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
 const PlaceCard = ({ place, distance, index, totalPlaces }: any) => {
+  const [showRecommendations, setShowRecommendations] = useState(false);
+  const [recommendations, setRecommendations] =
+    useState<Recommendations | null>(null);
+  const [isLoadingRecommendations, setIsLoadingRecommendations] =
+    useState(false);
+
   const updatePlaceDuration = usePlanTripStore(
     (state) => state.updatePlaceDuration
   );
   const estimatedPrice = 210;
+
+  const handleGetRecommendations = async () => {
+    setShowRecommendations(true);
+    setIsLoadingRecommendations(true);
+
+    try {
+      const placeName = place.structuredFormat.mainText.text;
+      const placeAddress = place.structuredFormat.secondaryText.text;
+
+      const recommendations = await generatePlaceRecommendations(
+        placeName,
+        placeAddress
+      );
+      setRecommendations(recommendations);
+    } catch (error) {
+      console.error("Error getting recommendations:", error);
+      setRecommendations({
+        visitTips: "Unable to generate visit tips at this time.",
+        budgetTips: "Unable to generate budget tips at this time.",
+        photoSpots:
+          "Unable to generate photo spot recommendations at this time.",
+        bestTimes:
+          "Unable to generate best times recommendations at this time.",
+      });
+    } finally {
+      setIsLoadingRecommendations(false);
+    }
+  };
 
   return (
     <View style={styles.card}>
@@ -143,6 +262,16 @@ const PlaceCard = ({ place, distance, index, totalPlaces }: any) => {
           </Text>
         </View>
       </View>
+
+      <TouchableOpacity
+        style={styles.recommendationsButton}
+        onPress={handleGetRecommendations}
+      >
+        <SolidIcons.SparklesIcon size={20} color="#fff" />
+        <Text style={styles.recommendationsButtonText}>
+          Get AI Recommendations
+        </Text>
+      </TouchableOpacity>
 
       <DurationSelector
         duration={place.duration || 60}
@@ -192,6 +321,13 @@ const PlaceCard = ({ place, distance, index, totalPlaces }: any) => {
           </View>
         </View>
       </View>
+
+      <RecommendationsModal
+        visible={showRecommendations}
+        onClose={() => setShowRecommendations(false)}
+        recommendations={recommendations}
+        isLoading={isLoadingRecommendations}
+      />
     </View>
   );
 };
@@ -299,96 +435,12 @@ const CalculateDistance = () => {
               {isLoading ? (
                 <SkeletonCard />
               ) : (
-                <View style={styles.card}>
-                  {/* Image Section */}
-                  <View style={styles.imageContainer}>
-                    <PlaceImage
-                      placeId={item.place.placeId}
-                      height={width * 0.5}
-                    />
-                  </View>
-
-                  <View style={styles.placeInfo}>
-                    <Text style={styles.placeName}>
-                      {item.place.structuredFormat.mainText.text}
-                    </Text>
-                    <View style={styles.locationRow}>
-                      <SolidIcons.MapPinIcon size={16} color="#666" />
-                      <Text style={styles.locationText}>
-                        {index === 0
-                          ? "From your location"
-                          : `From ${
-                              routesWithDuration?.[index - 1].place
-                                .structuredFormat.mainText.text
-                            }`}
-                      </Text>
-                    </View>
-                  </View>
-
-                  <DurationSelector
-                    duration={item.place.duration}
-                    onDurationChange={(duration) =>
-                      updatePlaceDuration(item.place.placeId, duration)
-                    }
-                  />
-
-                  <View style={styles.statsContainer}>
-                    <View style={styles.statBox}>
-                      <Text style={styles.statLabel}>Distance</Text>
-                      <Text style={styles.statValue}>
-                        {item.distance.toFixed(1)}km
-                      </Text>
-                    </View>
-                    <View style={styles.statBox}>
-                      <Text style={styles.statLabel}>Est. Price</Text>
-                      <Text style={styles.statValue}>${estimatedPrice}</Text>
-                    </View>
-                    <View style={styles.statBox}>
-                      <Text style={styles.statLabel}>Stop</Text>
-                      <Text style={styles.statValue}>
-                        {index + 1}/{routesWithDuration?.length}
-                      </Text>
-                    </View>
-                  </View>
-
-                  <View style={styles.descriptionContainer}>
-                    <Text style={styles.descriptionTitle}>Route Details</Text>
-                    <View style={styles.timelineContainer}>
-                      <View style={styles.timelineLeft}>
-                        <View
-                          style={[
-                            styles.timelineDot,
-                            { backgroundColor: "#FF9457" },
-                          ]}
-                        />
-                        <View style={styles.timelineLine} />
-                        <View
-                          style={[
-                            styles.timelineDot,
-                            { backgroundColor: "#0F2650" },
-                          ]}
-                        />
-                      </View>
-                      <View style={styles.timelineRight}>
-                        <Text style={styles.timelineText}>
-                          {index === 0
-                            ? "Your location"
-                            : routesWithDuration?.[index - 1].place
-                                .structuredFormat.secondaryText.text}
-                        </Text>
-                        <Text
-                          style={[
-                            styles.timelineText,
-                            styles.timelineDestination,
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {item.place.structuredFormat.secondaryText.text}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
+                <PlaceCard
+                  place={item.place}
+                  distance={item.distance}
+                  index={index}
+                  totalPlaces={routesWithDuration}
+                />
               )}
             </ScrollView>
           </View>
@@ -664,6 +716,72 @@ const styles = StyleSheet.create({
     color: "#0F2650",
     fontWeight: "600",
     marginHorizontal: 2,
+  },
+  recommendationsButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#0F2650",
+    padding: 12,
+    marginHorizontal: 15,
+    borderRadius: 10,
+    marginBottom: 15,
+    gap: 8,
+  },
+  recommendationsButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    minHeight: "70%",
+    padding: 20,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#0F2650",
+  },
+  modalBody: {
+    maxHeight: "80%",
+  },
+  loadingContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  loadingText: {
+    marginTop: 10,
+    color: "#666",
+    fontSize: 16,
+  },
+  recommendationSection: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#0F2650",
+    marginBottom: 10,
+  },
+  recommendationText: {
+    fontSize: 16,
+    color: "#666",
+    lineHeight: 24,
   },
 });
 
