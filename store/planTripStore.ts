@@ -4,22 +4,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { PlacePrediction } from "@/components/map/GooglePlacesAutoComplete";
 import { Place } from "@/types/type";
 
-export interface TripPlace {
-  id: string;
-  name: string;
-  latitude?: number;
-  longitude?: number;
-  address?: string;
-  geometry?: any;
-  distanceMeters?: number;
-  description?: string;
+export interface TripPlace extends PlacePrediction {
+  duration?: number; // Duration in minutes
 }
 
 interface PlanTripState {
-  places: PlacePrediction[];
+  places: TripPlace[];
   addPlace: (place: PlacePrediction) => void;
   removePlace: (id: string) => void;
   clearPlaces: () => void;
+  updatePlaceDuration: (placeId: string, duration: number) => void;
 }
 
 const usePlanTripStore = create<PlanTripState>()(
@@ -31,7 +25,7 @@ const usePlanTripStore = create<PlanTripState>()(
           // Check if the place already exists in the list
           places: state.places.some((p) => p.placeId === place.placeId)
             ? state.places
-            : [...state.places, place],
+            : [...state.places, { ...place, duration: 60 }], // Default duration: 60 minutes
         }));
       },
       removePlace: (id: string) => {
@@ -40,6 +34,13 @@ const usePlanTripStore = create<PlanTripState>()(
         }));
       },
       clearPlaces: () => set({ places: [] }),
+      updatePlaceDuration: (placeId: string, duration: number) => {
+        set((state) => ({
+          places: state.places.map((place) =>
+            place.placeId === placeId ? { ...place, duration } : place
+          ),
+        }));
+      },
     }),
     {
       name: "plan-trip-storage",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,8 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
+  Pressable,
+  TextInput,
 } from "react-native";
 import usePlanTripStore from "@/store/planTripStore";
 import * as SolidIcons from "react-native-heroicons/solid";
@@ -17,7 +19,106 @@ import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 const { width } = Dimensions.get("window");
 const height = Dimensions.get("window").height;
 
+const DurationSelector = ({
+  duration,
+  onDurationChange,
+}: {
+  duration: number;
+  onDurationChange: (duration: number) => void;
+}) => {
+  const [hours, setHours] = useState(Math.floor(duration / 60).toString());
+  const [minutes, setMinutes] = useState((duration % 60).toString());
+
+  const updateDuration = (newHours: string, newMinutes: string) => {
+    const h = parseInt(newHours) || 0;
+    const m = parseInt(newMinutes) || 0;
+    const totalMinutes = Math.min(Math.max(h * 60 + m, 5), 480); // Between 5 min and 8 hours
+    const updatedHours = Math.floor(totalMinutes / 60);
+    const updatedMinutes = totalMinutes % 60;
+
+    setHours(updatedHours.toString());
+    setMinutes(updatedMinutes.toString().padStart(2, "0"));
+    onDurationChange(totalMinutes);
+  };
+
+  const increment = () => {
+    const currentTotal = parseInt(hours) * 60 + parseInt(minutes);
+    const newTotal = Math.min(currentTotal + 5, 480);
+    updateDuration(
+      Math.floor(newTotal / 60).toString(),
+      (newTotal % 60).toString()
+    );
+  };
+
+  const decrement = () => {
+    const currentTotal = parseInt(hours) * 60 + parseInt(minutes);
+    const newTotal = Math.max(currentTotal - 5, 5);
+    updateDuration(
+      Math.floor(newTotal / 60).toString(),
+      (newTotal % 60).toString()
+    );
+  };
+
+  const handleHoursChange = (text: string) => {
+    const numericValue = text.replace(/[^0-9]/g, "");
+    setHours(numericValue);
+  };
+
+  const handleMinutesChange = (text: string) => {
+    const numericValue = text.replace(/[^0-9]/g, "");
+    setMinutes(numericValue);
+  };
+
+  const handleHoursBlur = () => {
+    updateDuration(hours, minutes);
+  };
+
+  const handleMinutesBlur = () => {
+    updateDuration(hours, minutes);
+  };
+
+  return (
+    <View style={styles.durationContainer}>
+      <Text style={styles.durationLabel}>Time to Spend</Text>
+      <View style={styles.durationControls}>
+        <Pressable style={styles.durationButton} onPress={decrement}>
+          <Text style={styles.durationButtonText}>−</Text>
+        </Pressable>
+        <View style={styles.durationValue}>
+          <TextInput
+            style={styles.durationInput}
+            value={hours}
+            onChangeText={handleHoursChange}
+            onBlur={handleHoursBlur}
+            keyboardType="number-pad"
+            maxLength={1}
+            selectTextOnFocus
+          />
+          <Text style={styles.durationUnit}>h</Text>
+          <Text style={styles.durationSeparator}>{":"}</Text>
+          <TextInput
+            style={styles.durationInput}
+            value={minutes}
+            onChangeText={handleMinutesChange}
+            onBlur={handleMinutesBlur}
+            keyboardType="number-pad"
+            maxLength={2}
+            selectTextOnFocus
+          />
+          <Text style={styles.durationUnit}>m</Text>
+        </View>
+        <Pressable style={styles.durationButton} onPress={increment}>
+          <Text style={styles.durationButtonText}>+</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+};
+
 const PlaceCard = ({ place, distance, index, totalPlaces }: any) => {
+  const updatePlaceDuration = usePlanTripStore(
+    (state) => state.updatePlaceDuration
+  );
   const estimatedPrice = 210;
 
   return (
@@ -42,6 +143,13 @@ const PlaceCard = ({ place, distance, index, totalPlaces }: any) => {
           </Text>
         </View>
       </View>
+
+      <DurationSelector
+        duration={place.duration || 60}
+        onDurationChange={(duration) =>
+          updatePlaceDuration(place.placeId, duration)
+        }
+      />
 
       <View style={styles.statsContainer}>
         <View style={styles.statBox}>
@@ -132,6 +240,9 @@ const SkeletonCard = () => {
 
 const CalculateDistance = () => {
   const { places } = usePlanTripStore();
+  const updatePlaceDuration = usePlanTripStore(
+    (state) => state.updatePlaceDuration
+  );
   const { data: routes, isLoading, error } = useRouteMatrix(places);
   const estimatedPrice = 210;
 
@@ -151,6 +262,16 @@ const CalculateDistance = () => {
     );
   }
 
+  // Merge routes with places data to get duration
+  const routesWithDuration = routes?.map((route) => ({
+    ...route,
+    place: {
+      ...route.place,
+      duration:
+        places.find((p) => p.placeId === route.place.placeId)?.duration || 60,
+    },
+  }));
+
   const totalDistance =
     routes?.reduce((acc, curr) => acc + curr.distance, 0) || 0;
   const totalPrice = 210;
@@ -161,14 +282,23 @@ const CalculateDistance = () => {
         loop={false}
         width={width}
         height={Dimensions.get("window").height}
-        data={isLoading ? Array(3).fill(null) : routes || []}
+        data={isLoading ? Array(3).fill(null) : routesWithDuration || []}
         scrollAnimationDuration={1000}
+        panGestureHandlerProps={{
+          activeOffsetX: [-10, 10],
+          failOffsetY: [-5, 5],
+        }}
         renderItem={({ item, index }) => (
-          <ScrollView style={styles.scrollView}>
-            {isLoading ? (
-              <SkeletonCard />
-            ) : (
-              <View style={styles.cardContainer}>
+          <View style={styles.cardContainer}>
+            <ScrollView
+              style={styles.scrollView}
+              contentContainerStyle={styles.scrollViewContent}
+              showsVerticalScrollIndicator={true}
+              nestedScrollEnabled={true}
+            >
+              {isLoading ? (
+                <SkeletonCard />
+              ) : (
                 <View style={styles.card}>
                   {/* Image Section */}
                   <View style={styles.imageContainer}>
@@ -188,12 +318,19 @@ const CalculateDistance = () => {
                         {index === 0
                           ? "From your location"
                           : `From ${
-                              routes?.[index - 1].place.structuredFormat
-                                .mainText.text
+                              routesWithDuration?.[index - 1].place
+                                .structuredFormat.mainText.text
                             }`}
                       </Text>
                     </View>
                   </View>
+
+                  <DurationSelector
+                    duration={item.place.duration}
+                    onDurationChange={(duration) =>
+                      updatePlaceDuration(item.place.placeId, duration)
+                    }
+                  />
 
                   <View style={styles.statsContainer}>
                     <View style={styles.statBox}>
@@ -209,7 +346,7 @@ const CalculateDistance = () => {
                     <View style={styles.statBox}>
                       <Text style={styles.statLabel}>Stop</Text>
                       <Text style={styles.statValue}>
-                        {index + 1}/{routes?.length}
+                        {index + 1}/{routesWithDuration?.length}
                       </Text>
                     </View>
                   </View>
@@ -236,8 +373,8 @@ const CalculateDistance = () => {
                         <Text style={styles.timelineText}>
                           {index === 0
                             ? "Your location"
-                            : routes?.[index - 1].place.structuredFormat
-                                .secondaryText.text}
+                            : routesWithDuration?.[index - 1].place
+                                .structuredFormat.secondaryText.text}
                         </Text>
                         <Text
                           style={[
@@ -252,9 +389,9 @@ const CalculateDistance = () => {
                     </View>
                   </View>
                 </View>
-              </View>
-            )}
-          </ScrollView>
+              )}
+            </ScrollView>
+          </View>
         )}
       />
     </View>
@@ -269,11 +406,15 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  scrollViewContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
   cardContainer: {
     height: height * 0.7,
+    paddingHorizontal: 10,
   },
   card: {
-    margin: 10,
     backgroundColor: "white",
     borderRadius: 20,
     overflow: "hidden",
@@ -282,7 +423,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    flex: 1,
   },
   imageContainer: {
     width: "100%",
@@ -460,6 +600,70 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 15,
     marginBottom: 20,
+  },
+  durationContainer: {
+    padding: 15,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: "#eee",
+  },
+  durationLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#0F2650",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  durationControls: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  durationButton: {
+    width: 36,
+    height: 36,
+    backgroundColor: "#0F2650",
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  durationButtonText: {
+    fontSize: 24,
+    color: "white",
+    fontWeight: "600",
+    lineHeight: 24,
+  },
+  durationValue: {
+    minWidth: 120,
+    paddingHorizontal: 10,
+    height: 36,
+    backgroundColor: "#F5F5F5",
+    borderRadius: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  durationInput: {
+    fontSize: 16,
+    color: "#0F2650",
+    fontWeight: "600",
+    textAlign: "center",
+    minWidth: 24,
+    padding: 0,
+  },
+  durationUnit: {
+    fontSize: 16,
+    color: "#0F2650",
+    fontWeight: "600",
+    marginLeft: 2,
+    marginRight: 4,
+  },
+  durationSeparator: {
+    fontSize: 16,
+    color: "#0F2650",
+    fontWeight: "600",
+    marginHorizontal: 2,
   },
 });
 
