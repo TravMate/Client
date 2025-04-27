@@ -23,10 +23,10 @@ const { width } = Dimensions.get("window");
 const height = Dimensions.get("window").height;
 
 interface Recommendations {
-  visitTips: string;
-  budgetTips: string;
-  photoSpots: string;
-  bestTimes: string;
+  visitTips: string[];
+  budgetTips: string[];
+  photoSpots: string[];
+  bestTimes: string[];
 }
 
 interface RecommendationsModalProps {
@@ -138,6 +138,16 @@ const RecommendationsModal = ({
   recommendations,
   isLoading,
 }: RecommendationsModalProps) => {
+  const renderBulletPoints = (points: string[] | undefined) => {
+    if (!points || !Array.isArray(points)) return null;
+    return points.map((point, index) => (
+      <View key={index} style={styles.bulletPoint}>
+        <Text style={styles.bullet}>•</Text>
+        <Text style={styles.recommendationText}>{point}</Text>
+      </View>
+    ));
+  };
+
   return (
     <Modal
       animationType="slide"
@@ -166,30 +176,22 @@ const RecommendationsModal = ({
               <>
                 <View style={styles.recommendationSection}>
                   <Text style={styles.sectionTitle}>🎯 Visit Tips</Text>
-                  <Text style={styles.recommendationText}>
-                    {recommendations?.visitTips}
-                  </Text>
+                  {renderBulletPoints(recommendations?.visitTips)}
                 </View>
 
                 <View style={styles.recommendationSection}>
                   <Text style={styles.sectionTitle}>💰 Budget Tips</Text>
-                  <Text style={styles.recommendationText}>
-                    {recommendations?.budgetTips}
-                  </Text>
+                  {renderBulletPoints(recommendations?.budgetTips)}
                 </View>
 
                 <View style={styles.recommendationSection}>
                   <Text style={styles.sectionTitle}>📸 Photo Spots</Text>
-                  <Text style={styles.recommendationText}>
-                    {recommendations?.photoSpots}
-                  </Text>
+                  {renderBulletPoints(recommendations?.photoSpots)}
                 </View>
 
                 <View style={styles.recommendationSection}>
                   <Text style={styles.sectionTitle}>⏰ Best Times</Text>
-                  <Text style={styles.recommendationText}>
-                    {recommendations?.bestTimes}
-                  </Text>
+                  {renderBulletPoints(recommendations?.bestTimes)}
                 </View>
               </>
             )}
@@ -228,12 +230,14 @@ const PlaceCard = ({ place, distance, index, totalPlaces }: any) => {
     } catch (error) {
       console.error("Error getting recommendations:", error);
       setRecommendations({
-        visitTips: "Unable to generate visit tips at this time.",
-        budgetTips: "Unable to generate budget tips at this time.",
-        photoSpots:
+        visitTips: ["Unable to generate visit tips at this time."],
+        budgetTips: ["Unable to generate budget tips at this time."],
+        photoSpots: [
           "Unable to generate photo spot recommendations at this time.",
-        bestTimes:
+        ],
+        bestTimes: [
           "Unable to generate best times recommendations at this time.",
+        ],
       });
     } finally {
       setIsLoadingRecommendations(false);
@@ -778,7 +782,19 @@ const styles = StyleSheet.create({
     color: "#0F2650",
     marginBottom: 10,
   },
+  bulletPoint: {
+    flexDirection: "row",
+    paddingLeft: 8,
+    marginBottom: 8,
+  },
+  bullet: {
+    fontSize: 16,
+    color: "#0F2650",
+    marginRight: 8,
+    marginTop: 3,
+  },
   recommendationText: {
+    flex: 1,
     fontSize: 16,
     color: "#666",
     lineHeight: 24,

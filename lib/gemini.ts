@@ -6,10 +6,10 @@ const genAI = new GoogleGenerativeAI(
 );
 
 export interface PlaceRecommendations {
-  visitTips: string;
-  budgetTips: string;
-  photoSpots: string;
-  bestTimes: string;
+  visitTips: string[];
+  budgetTips: string[];
+  photoSpots: string[];
+  bestTimes: string[];
 }
 
 export async function generatePlaceRecommendations(
@@ -22,13 +22,13 @@ export async function generatePlaceRecommendations(
 
     const prompt = `As an AI travel assistant, please provide detailed recommendations for visiting ${placeName} located at ${placeAddress}. Format the response in JSON with the following structure:
 {
-  "visitTips": "3-4 practical tips for visiting the place, including cultural considerations and must-see aspects. All in bullet",
-  "budgetTips": "2-3 specific tips for saving money and budget considerations",
-  "photoSpots": "2-3 best spots or angles for taking memorable photos",
-  "bestTimes": "Optimal times to visit considering crowds, lighting, and weather"
+  "visitTips": ["3-4 practical tips for visiting the place, each as a separate bullet point"],
+  "budgetTips": ["2-3 specific tips for saving money, each as a separate bullet point"],
+  "photoSpots": ["2-3 best spots or angles for taking photos, each as a separate bullet point"],
+  "bestTimes": ["2-3 best times to visit, each as a separate bullet point"]
 }
 
-Please ensure the response is strictly in valid JSON format.`;
+Please ensure each field contains an array of strings, with each string being a separate tip or point. The response must be strictly in valid JSON format.`;
 
     // Use structured output to ensure we get valid JSON
     const result = await model.generateContent({
@@ -58,14 +58,18 @@ Please ensure the response is strictly in valid JSON format.`;
   } catch (error) {
     console.error("Error generating recommendations:", error);
     return {
-      visitTips:
+      visitTips: [
         "Unable to generate visit tips at this time. Please try again later.",
-      budgetTips:
+      ],
+      budgetTips: [
         "Unable to generate budget tips at this time. Please try again later.",
-      photoSpots:
+      ],
+      photoSpots: [
         "Unable to generate photo spot recommendations at this time. Please try again later.",
-      bestTimes:
+      ],
+      bestTimes: [
         "Unable to generate best times recommendations at this time. Please try again later.",
+      ],
     };
   }
 }
