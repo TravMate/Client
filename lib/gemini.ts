@@ -73,3 +73,35 @@ Please ensure each field contains an array of strings, with each string being a 
     };
   }
 }
+
+export async function generatePlaceAnswer(
+  placeName: string,
+  placeAddress: string,
+  question: string
+): Promise<string> {
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const prompt = `As an AI travel assistant, please answer the following question about ${placeName} located at ${placeAddress}:
+
+Question: ${question}
+
+Please provide a concise but informative answer that would be helpful for a tourist. Focus on practical, accurate information.`;
+
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.7,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 1024,
+      },
+    });
+
+    const response = await result.response;
+    return response.text();
+  } catch (error) {
+    console.error("Error generating answer:", error);
+    return "Sorry, I couldn't generate an answer at this time. Please try again later.";
+  }
+}

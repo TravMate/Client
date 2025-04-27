@@ -17,7 +17,10 @@ import { useRouteMatrix } from "@/hooks/useCalculateDistance";
 import Carousel from "react-native-reanimated-carousel";
 import PlaceImage from "./PlaceImage";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
-import { generatePlaceRecommendations } from "@/lib/gemini";
+import {
+  generatePlaceRecommendations,
+  generatePlaceAnswer,
+} from "@/lib/gemini";
 
 const { width } = Dimensions.get("window");
 const height = Dimensions.get("window").height;
@@ -33,6 +36,14 @@ interface RecommendationsModalProps {
   visible: boolean;
   onClose: () => void;
   recommendations: Recommendations | null;
+  isLoading: boolean;
+}
+
+interface FAQModalProps {
+  visible: boolean;
+  onClose: () => void;
+  question: string;
+  answer: string | null;
   isLoading: boolean;
 }
 
@@ -202,17 +213,70 @@ const RecommendationsModal = ({
   );
 };
 
+const FAQModal = ({
+  visible,
+  onClose,
+  question,
+  answer,
+  isLoading,
+}: FAQModalProps) => {
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>FAQ Answer</Text>
+            <TouchableOpacity onPress={onClose}>
+              <SolidIcons.XMarkIcon size={24} color="#0F2650" />
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView style={styles.modalBody}>
+            <Text style={styles.faqQuestion}>{question}</Text>
+            {isLoading ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#0F2650" />
+                <Text style={styles.loadingText}>
+                  Getting answer from AI...
+                </Text>
+              </View>
+            ) : (
+              <Text style={styles.faqAnswer}>{answer}</Text>
+            )}
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
 const PlaceCard = ({ place, distance, index, totalPlaces }: any) => {
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [recommendations, setRecommendations] =
     useState<Recommendations | null>(null);
   const [isLoadingRecommendations, setIsLoadingRecommendations] =
     useState(false);
+  const [showFAQ, setShowFAQ] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState("");
+  const [currentAnswer, setCurrentAnswer] = useState<string | null>(null);
+  const [isLoadingAnswer, setIsLoadingAnswer] = useState(false);
 
   const updatePlaceDuration = usePlanTripStore(
     (state) => state.updatePlaceDuration
   );
   const estimatedPrice = 210;
+
+  const faqQuestions = [
+    "What's the best time to avoid crowds?",
+    "Is this place suitable for children?",
+    "What are the nearby food options?",
+    "Are there any parking facilities?",
+  ];
 
   const handleGetRecommendations = async () => {
     setShowRecommendations(true);
@@ -241,6 +305,31 @@ const PlaceCard = ({ place, distance, index, totalPlaces }: any) => {
       });
     } finally {
       setIsLoadingRecommendations(false);
+    }
+  };
+
+  const handleFAQClick = async (question: string) => {
+    setCurrentQuestion(question);
+    setShowFAQ(true);
+    setIsLoadingAnswer(true);
+    setCurrentAnswer(null);
+
+    try {
+      const placeName = place.structuredFormat.mainText.text;
+      const placeAddress = place.structuredFormat.secondaryText.text;
+      const answer = await generatePlaceAnswer(
+        placeName,
+        placeAddress,
+        question
+      );
+      setCurrentAnswer(answer);
+    } catch (error) {
+      console.error("Error getting answer:", error);
+      setCurrentAnswer(
+        "Sorry, I couldn't get an answer at this time. Please try again later."
+      );
+    } finally {
+      setIsLoadingAnswer(false);
     }
   };
 
@@ -326,11 +415,34 @@ const PlaceCard = ({ place, distance, index, totalPlaces }: any) => {
         </View>
       </View>
 
+      <View style={styles.faqContainer}>
+        <Text style={styles.faqTitle}>Frequently Asked Questions</Text>
+        <View style={styles.faqButtonsContainer}>
+          {faqQuestions.map((question, idx) => (
+            <TouchableOpacity
+              key={idx}
+              style={styles.faqButton}
+              onPress={() => handleFAQClick(question)}
+            >
+              <Text style={styles.faqButtonText}>{question}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
       <RecommendationsModal
         visible={showRecommendations}
         onClose={() => setShowRecommendations(false)}
         recommendations={recommendations}
         isLoading={isLoadingRecommendations}
+      />
+
+      <FAQModal
+        visible={showFAQ}
+        onClose={() => setShowFAQ(false)}
+        question={currentQuestion}
+        answer={currentAnswer}
+        isLoading={isLoadingAnswer}
       />
     </View>
   );
@@ -795,6 +907,42 @@ const styles = StyleSheet.create({
   },
   recommendationText: {
     flex: 1,
+    fontSize: 16,
+    color: "#666",
+    lineHeight: 24,
+  },
+  faqContainer: {
+    padding: 15,
+    borderTopWidth: 1,
+    borderColor: "#eee",
+  },
+  faqTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#0F2650",
+    marginBottom: 15,
+  },
+  faqButtonsContainer: {
+    gap: 10,
+  },
+  faqButton: {
+    backgroundColor: "#F5F5F5",
+    padding: 12,
+    borderRadius: 10,
+    alignItems: "flex-start",
+  },
+  faqButtonText: {
+    color: "#0F2650",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  faqQuestion: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#0F2650",
+    marginBottom: 15,
+  },
+  faqAnswer: {
     fontSize: 16,
     color: "#666",
     lineHeight: 24,
