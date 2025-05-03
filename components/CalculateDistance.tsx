@@ -570,16 +570,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F1F1F1",
+    paddingTop: 10,
+    // backgroundColor: "red",
   },
   scrollView: {
     flex: 1,
   },
   scrollViewContent: {
     flexGrow: 1,
-    paddingBottom: 20,
+    paddingBottom: 6,
+    // paddingTop: 2,
   },
   cardContainer: {
-    height: height * 0.7,
+    height: height * 0.69,
     paddingHorizontal: 10,
   },
   card: {
@@ -789,10 +792,10 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   durationButton: {
-    width: 36,
-    height: 36,
+    width: 40,
+    height: 40,
     backgroundColor: "#0F2650",
-    borderRadius: 18,
+    borderRadius: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -800,7 +803,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "white",
     fontWeight: "600",
-    lineHeight: 24,
+    lineHeight: 30,
   },
   durationValue: {
     minWidth: 120,
@@ -873,7 +876,7 @@ const styles = StyleSheet.create({
     color: "#0F2650",
   },
   modalBody: {
-    maxHeight: "80%",
+    maxHeight: "85%",
   },
   loadingContainer: {
     alignItems: "center",

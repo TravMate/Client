@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CustomTextInput from "@/components/CustomTextInput";
 import CustomButton from "@/components/CustomButton";
 import { router } from "expo-router";
-import { createAccount } from "@/lib/auth";
+import { createAccount, createSession } from "@/lib/auth";
 
 const SignUp = () => {
   const [form, setForm] = useState({
@@ -21,13 +21,19 @@ const SignUp = () => {
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
 
-    const response = await createAccount({
+    const createAccountResponse = await createAccount({
       name,
       email: trimmedEmail,
       password: trimmedPassword,
     });
 
-    if (response) {
+    const createFirstSession = await createSession({
+      email: trimmedEmail,
+      password: trimmedPassword,
+    });
+
+    if (createAccountResponse) {
+      createFirstSession;
       router.replace("/(tabs)/home");
     } else {
       Alert.alert("Error", "Sign up failed. Please try again.");

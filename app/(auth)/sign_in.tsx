@@ -9,8 +9,10 @@ import { images } from "@/constants";
 
 const SignIn = () => {
   const [form, setForm] = useState({
-    email: __DEV__ ? "ahmedhossam00456@gmail.com" : "",
-    password: __DEV__ ? "12345678" : "",
+    // email: __DEV__ ? "ahmedhossam00456@gmail.com" : "",
+    // password: __DEV__ ? "12345678" : "",
+    email: "",
+    password: "",
   });
 
   const handleSignIn = async (email: string, password: string) => {

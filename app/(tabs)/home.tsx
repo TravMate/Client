@@ -4,6 +4,7 @@ import { useFetchTourismPlaces } from "@/hooks/FetchTourismPLaces";
 import SwipList from "@/components/SwipList";
 import PlacesList from "@/components/PlacesList";
 import useFavoriteStore from "@/store/favoriteStore";
+import ScreenLoadingSkeleton from "@/components/ScreenLoadingSkeleton";
 
 const home = () => {
   const { data, isLoading } = useFetchTourismPlaces();
@@ -14,11 +15,7 @@ const home = () => {
   }, []);
 
   if (isLoading || loading) {
-    return (
-      <View className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return <ScreenLoadingSkeleton />;
   }
 
   return (

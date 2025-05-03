@@ -47,7 +47,7 @@ const PlaceDetails = () => {
   const [isFav, setIsFav] = useState(false);
   const route = useRoute();
   const data = route.params as PlaceDetailsProps;
-  const mapUrl = `https://maps.geoapify.com/v1/staticmap?style=osm-bright&width=600&height=400&center=lonlat:${placeDetails?.location.longitude},${placeDetails?.location.latitude}&zoom=13&apiKey=${geoapifyApiKey}`;
+  const mapUrl = `https://maps.geoapify.com/v1/staticmap?style=osm-bright&width=600&height=400&center=lonlat:${placeDetails?.location.longitude},${placeDetails?.location.latitude}&zoom=16&apiKey=${geoapifyApiKey}`;
   useEffect(() => {
     setPlaceDetails(data.placeData);
     setIsFav(data.isFav);

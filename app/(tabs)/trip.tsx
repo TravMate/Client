@@ -14,6 +14,7 @@ import "react-native-get-random-values";
 import PlanTrip from "@/components/PlanTrip";
 import usePlanTripStore from "@/store/planTripStore";
 import CalculateDistance from "@/components/CalculateDistance";
+import ChooseGuide from "@/components/ChooseGuide";
 
 const width = Dimensions.get("window").width;
 
@@ -24,16 +25,10 @@ const stepsConfig = [
   },
   {
     component: () => <CalculateDistance />,
-    title: "Calculate Distance",
+    title: "Preview Your Trip",
   },
   {
-    component: () => (
-      <View className="flex-1">
-        <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
-          Choose tourguide
-        </Text>
-      </View>
-    ),
+    component: () => <ChooseGuide />,
     title: "Choose Tourguide",
   },
   {
@@ -155,7 +150,7 @@ const Trip = () => {
 
           <View className="px-8 py-2 mt-auto">
             {currentStep === 2 ? (
-              <View className="flex-row items-center justify-between mb-4">
+              <View className="flex-row items-center justify-between">
                 <View>
                   <Text className="text-gray-600 text-lg">Total price</Text>
                   <Text className="text-3xl font-bold">$210</Text>
