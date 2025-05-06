@@ -13,8 +13,11 @@ import * as SolidIcons from "react-native-heroicons/solid";
 import "react-native-get-random-values";
 import PlanTrip from "@/components/PlanTrip";
 import usePlanTripStore from "@/store/planTripStore";
+import { useGuideStore } from "@/store/guideStore";
 import CalculateDistance from "@/components/CalculateDistance";
 import ChooseGuide from "@/components/ChooseGuide";
+import { useRouteMatrix } from "@/hooks/useCalculateDistance";
+import ReviewConfirm from "@/components/ReviewConfirm";
 
 const width = Dimensions.get("window").width;
 
@@ -32,12 +35,8 @@ const stepsConfig = [
     title: "Choose Tourguide",
   },
   {
-    component: () => (
-      <View className="flex-1">
-        <Text className="text-2xl font-bold mb-5 text-[#0F2650]">
-          Review & Confirm
-        </Text>
-      </View>
+    component: (props: any) => (
+      <ReviewConfirm onEdit={props.onEdit} onConfirm={props.onConfirm} />
     ),
     title: "Review & Confirm",
   },
@@ -46,7 +45,10 @@ const stepsConfig = [
 const Trip = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
-  const { places } = usePlanTripStore();
+  const { places, getTripPriceBreakdown } = usePlanTripStore();
+  const { data: routes } = useRouteMatrix(places);
+  const { selectedGuide } = useGuideStore();
+  const breakdown = getTripPriceBreakdown(routes || [], selectedGuide);
 
   // Use useEffect to handle state changes based on places
   useEffect(() => {
@@ -71,6 +73,11 @@ const Trip = () => {
     }
   };
 
+  const handleEdit = () => setCurrentStep(1); // Go back to trip planning
+  const handleConfirm = () => {
+    /* TODO: handle reservation confirmation */
+  };
+
   return (
     <View className="h-full relative bg-[#F1F1F1]">
       <Stack.Screen
@@ -83,7 +90,6 @@ const Trip = () => {
                   marginLeft: 15,
                   backgroundColor: "#fff",
                   borderRadius: 25,
-                  // marginRight: 15,
                   padding: 8,
                 }}
                 onPress={handleBack}
@@ -97,7 +103,6 @@ const Trip = () => {
             height: 70,
           },
           headerTitleAlign: "center",
-
           headerBackground: () => (
             <View
               style={{
@@ -145,32 +150,41 @@ const Trip = () => {
       ) : (
         <View className="flex-1 flex-col">
           <View className="flex-1">
-            {currentStep > 0 && stepsConfig[currentStep - 1].component()}
+            {currentStep === 4
+              ? stepsConfig[3].component({
+                  onEdit: handleEdit,
+                  onConfirm: handleConfirm,
+                })
+              : currentStep > 0 && stepsConfig[currentStep - 1].component()}
           </View>
 
-          <View className="px-8 py-2 mt-auto">
-            {currentStep === 2 ? (
-              <View className="flex-row items-center justify-between">
-                <View>
-                  <Text className="text-gray-600 text-lg">Total price</Text>
-                  <Text className="text-3xl font-bold">$210</Text>
+          {currentStep < 4 && (
+            <View className="px-8 py-2 mt-auto">
+              {currentStep === 2 ? (
+                <View className="flex-row items-center justify-between">
+                  <View>
+                    <Text className="text-gray-600 text-lg">Total price</Text>
+                    <Text className="text-3xl font-bold">
+                      ${breakdown.total}
+                    </Text>
+                  </View>
+                  <CustomButton
+                    title="Next"
+                    handlePress={handleNext}
+                    containerStyles="w-[45%] ml-auto min-h-[46px] bg-[#F98C53] rounded-xl"
+                    textStyles="text-white"
+                  />
                 </View>
+              ) : (
                 <CustomButton
-                  title="Next"
+                  title={currentStep === 4 ? "Finish" : "Next"}
                   handlePress={handleNext}
-                  containerStyles="w-[45%] ml-auto min-h-[46px] bg-[#F98C53] rounded-xl"
+                  containerStyles="w-full mx-auto min-h-[46px] bg-[#F98C53] rounded-xl"
                   textStyles="text-white"
                 />
-              </View>
-            ) : (
-              <CustomButton
-                title={currentStep === 4 ? "Finish" : "Next"}
-                handlePress={handleNext}
-                containerStyles="w-full mx-auto min-h-[46px] bg-[#F98C53] rounded-xl"
-                textStyles="text-white"
-              />
-            )}
-          </View>
+              )}
+            </View>
+          )}
         </View>
       )}
     </View>

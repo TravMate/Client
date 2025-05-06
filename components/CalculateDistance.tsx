@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import usePlanTripStore from "@/store/planTripStore";
+import { useGuideStore } from "@/store/guideStore";
 import * as SolidIcons from "react-native-heroicons/solid";
 import { useRouteMatrix } from "@/hooks/useCalculateDistance";
 import Carousel from "react-native-reanimated-carousel";
@@ -269,7 +270,23 @@ const PlaceCard = ({ place, distance, index, totalPlaces }: any) => {
   const updatePlaceDuration = usePlanTripStore(
     (state) => state.updatePlaceDuration
   );
-  const estimatedPrice = 210;
+  const calculateTripPrice = usePlanTripStore(
+    (state) => state.calculateTripPrice
+  );
+  const { selectedGuide } = useGuideStore();
+
+  // Calculate price for this specific place
+  const calculatePlacePrice = (distance: number, duration: number) => {
+    const basePrice = 50; // Base price for visiting a place
+    const distanceRate = 2; // Price per km
+    const durationRate = 0.5; // Price per minute
+
+    return Math.round(
+      basePrice + distance * distanceRate + duration * durationRate
+    );
+  };
+
+  const estimatedPrice = calculatePlacePrice(distance, place.duration || 60);
 
   const faqQuestions = [
     "What's the best time to avoid crowds?",
@@ -377,10 +394,6 @@ const PlaceCard = ({ place, distance, index, totalPlaces }: any) => {
         <View style={styles.statBox}>
           <Text style={styles.statLabel}>Distance</Text>
           <Text style={styles.statValue}>{distance.toFixed(1)}km</Text>
-        </View>
-        <View style={styles.statBox}>
-          <Text style={styles.statLabel}>Est. Price</Text>
-          <Text style={styles.statValue}>${estimatedPrice}</Text>
         </View>
         <View style={styles.statBox}>
           <Text style={styles.statLabel}>Stop</Text>
@@ -491,12 +504,12 @@ const SkeletonCard = () => {
 };
 
 const CalculateDistance = () => {
-  const { places } = usePlanTripStore();
+  const { places, getTripPriceBreakdown } = usePlanTripStore();
   const updatePlaceDuration = usePlanTripStore(
     (state) => state.updatePlaceDuration
   );
   const { data: routes, isLoading, error } = useRouteMatrix(places);
-  const estimatedPrice = 210;
+  const { selectedGuide } = useGuideStore();
 
   if (error) {
     return (
@@ -524,9 +537,7 @@ const CalculateDistance = () => {
     },
   }));
 
-  const totalDistance =
-    routes?.reduce((acc, curr) => acc + curr.distance, 0) || 0;
-  const totalPrice = 210;
+  const breakdown = getTripPriceBreakdown(routes || [], selectedGuide);
 
   return (
     <View style={styles.container}>
