@@ -270,23 +270,6 @@ const PlaceCard = ({ place, distance, index, totalPlaces }: any) => {
   const updatePlaceDuration = usePlanTripStore(
     (state) => state.updatePlaceDuration
   );
-  const calculateTripPrice = usePlanTripStore(
-    (state) => state.calculateTripPrice
-  );
-  const { selectedGuide } = useGuideStore();
-
-  // Calculate price for this specific place
-  const calculatePlacePrice = (distance: number, duration: number) => {
-    const basePrice = 50; // Base price for visiting a place
-    const distanceRate = 2; // Price per km
-    const durationRate = 0.5; // Price per minute
-
-    return Math.round(
-      basePrice + distance * distanceRate + duration * durationRate
-    );
-  };
-
-  const estimatedPrice = calculatePlacePrice(distance, place.duration || 60);
 
   const faqQuestions = [
     "What's the best time to avoid crowds?",
