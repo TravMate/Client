@@ -51,7 +51,7 @@ const useFavoriteStore = create<FavoriteStore>((set, get) => ({
       set((state) => ({
         favoriteIds: [...state.favoriteIds, placeId],
       }));
-      console.log("favoriteIds", get().favoriteIds);
+      // console.log("favoriteIds", get().favoriteIds);
     } catch (error) {
       console.error("Error adding favorite:", error);
     }

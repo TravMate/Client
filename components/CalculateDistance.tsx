@@ -179,7 +179,7 @@ const RecommendationsModal = ({
           <ScrollView style={styles.modalBody}>
             {isLoading ? (
               <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#0F2650" />
+                <ActivityIndicator size="large" color="#FF7043" />
                 <Text style={styles.loadingText}>
                   Generating recommendations...
                 </Text>
@@ -241,7 +241,7 @@ const FAQModal = ({
             <Text style={styles.faqQuestion}>{question}</Text>
             {isLoading ? (
               <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#0F2650" />
+                <ActivityIndicator size="large" color="#FF7043" />
                 <Text style={styles.loadingText}>
                   Getting answer from AI...
                 </Text>

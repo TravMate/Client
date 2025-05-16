@@ -1,46 +1,46 @@
 import { Client, Databases, Storage } from "react-native-appwrite";
+import { Guide } from "@/components/ChooseGuide";
 
 const PROJECT_ID = process.env.EXPO_PUBLIC_PROJECT_ID;
 const DATABASE_ID = process.env.EXPO_PUBLIC_DATABASE_ID;
-const COLLECTION_ID = process.env.EXPO_PUBLIC_GUIDE_COLLECTOION_ID;
+const COLLECTION_ID = process.env.EXPO_PUBLIC_GUIDE_COLLECTION_ID;
 const BUCKET_ID = process.env.EXPO_PUBLIC_BUCKET_ID;
 
 const client = new Client()
-  .setEndpoint("https://cloud.appwrite.io/v1") // Your Appwrite endpoint
-  .setProject(`${PROJECT_ID}`); // Replace with your project ID
+  .setEndpoint("https://cloud.appwrite.io/v1")
+  .setProject(`${PROJECT_ID}`);
 
 const databases = new Databases(client);
 const storage = new Storage(client);
 
 async function fetchGuidesWithImages() {
   try {
-    // 1. Fetch all guide documents
     const response = await databases.listDocuments(
-      `${DATABASE_ID}`, // Replace with your database ID
-      `${COLLECTION_ID}` // Your collection ID
+      `${DATABASE_ID}`,
+      `${COLLECTION_ID}`
     );
 
-    // 2. Map through documents and add image URLs
     const guidesWithImages = await Promise.all(
       response.documents.map(async (guide) => {
         let guideImageUrl = null;
         let carImageUrl = null;
 
         if (guide.guideImageId && guide.carImageId) {
-          // 3. Get image URL from Storage
-          guideImageUrl = storage.getFileView(
-            `${BUCKET_ID}`, // Replace with your storage bucket ID
+          const guideImageViewUrl = storage.getFileView(
+            `${BUCKET_ID}`,
             guide.guideImageId
           );
-          carImageUrl = storage.getFileView(
-            `${BUCKET_ID}`, // Replace with your storage bucket ID
+          const carImageViewUrl = storage.getFileView(
+            `${BUCKET_ID}`,
             guide.carImageId
           );
+          guideImageUrl = guideImageViewUrl.href;
+          carImageUrl = carImageViewUrl.href;
         }
 
         return {
           ...guide,
-          guideImageUrl, // Add the URL to the guide object
+          guideImageUrl,
           carImageUrl,
         };
       })
@@ -53,4 +53,47 @@ async function fetchGuidesWithImages() {
   }
 }
 
-export { fetchGuidesWithImages };
+async function fetchGuideById(guideId: string): Promise<Guide | null> {
+  try {
+    const guide = await databases.getDocument(
+      `${DATABASE_ID}`,
+      `${COLLECTION_ID}`,
+      guideId
+    );
+
+    let guideImageUrl = null;
+    let carImageUrl = null;
+
+    if (guide.guideImageId && guide.carImageId) {
+      const guideImageViewUrl = storage.getFileView(
+        `${BUCKET_ID}`,
+        guide.guideImageId
+      );
+      const carImageViewUrl = storage.getFileView(
+        `${BUCKET_ID}`,
+        guide.carImageId
+      );
+      guideImageUrl = guideImageViewUrl.href;
+      carImageUrl = carImageViewUrl.href;
+    }
+
+    return {
+      $id: guide.$id,
+      name: guide.name,
+      price: guide.price,
+      rating: guide.rating,
+      guideImageUrl,
+      carImageUrl,
+      $createdAt: guide.$createdAt,
+      $updatedAt: guide.$updatedAt,
+      $collectionId: guide.$collectionId,
+      $databaseId: guide.$databaseId,
+      $permissions: guide.$permissions,
+    };
+  } catch (error) {
+    console.error("Error fetching guide:", error);
+    return null;
+  }
+}
+
+export { fetchGuidesWithImages, fetchGuideById };

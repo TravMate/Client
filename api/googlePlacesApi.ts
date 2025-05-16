@@ -3,7 +3,9 @@ import { Place } from "@/types/type";
 const PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 const BASE_URL = "https://places.googleapis.com/v1/places:searchNearby";
 
-export const fetchTourismPlacesApi = async (): Promise<Place[]> => {
+export const fetchTourismPlacesApi = async (
+  radius: number
+): Promise<Place[]> => {
   try {
     // Validate API key format
     if (!PLACES_API_KEY?.startsWith("AIza")) {
@@ -19,7 +21,7 @@ export const fetchTourismPlacesApi = async (): Promise<Place[]> => {
             latitude: 30.0444, // Cairo coordinates
             longitude: 31.2357,
           },
-          radius: 20000, // 20 kilometers
+          radius: radius, // 20 kilometers
         },
       },
     };

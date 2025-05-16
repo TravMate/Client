@@ -1,4 +1,4 @@
-import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import React, { useEffect } from "react";
 import { useFetchTourismPlaces } from "@/hooks/FetchTourismPLaces";
 import SwipList from "@/components/SwipList";
@@ -7,7 +7,7 @@ import useFavoriteStore from "@/store/favoriteStore";
 import ScreenLoadingSkeleton from "@/components/ScreenLoadingSkeleton";
 
 const home = () => {
-  const { data, isLoading } = useFetchTourismPlaces();
+  const { data, isLoading } = useFetchTourismPlaces(20000);
   const { loadFavorites, loading } = useFavoriteStore();
 
   useEffect(() => {
@@ -20,12 +20,12 @@ const home = () => {
 
   return (
     <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-      <View className="flex-1 p-6">
+      {/* <View className="flex-1 p-6">
         <Text className="text-2xl font-bold">
           Commented out to save requests
         </Text>
-      </View>
-      {/* <View className="flex-1 pt-6">
+      </View> */}
+      <View className="flex-1 pt-6">
         <Text className="text-2xl font-bold mb-5 ml-5">Places near to you</Text>
         <SwipList data={data || []} />
       </View>
@@ -36,7 +36,7 @@ const home = () => {
 
       <View className="flex-1">
         <PlacesList data={data || []} title="Explore the Country" />
-      </View> */}
+      </View>
     </ScrollView>
   );
 };

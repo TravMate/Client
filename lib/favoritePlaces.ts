@@ -27,7 +27,7 @@ export const addFavoritePlace = async (placeId: string) => {
         placeId: placeId,
       }
     );
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     console.error("Error adding favorite place:", error);

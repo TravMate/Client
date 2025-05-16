@@ -36,7 +36,7 @@ const buttonStyles = {
 const Favorites = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { favoriteIds, loadFavorites } = useFavoriteStore();
-  const { data, isLoading } = useFetchTourismPlaces();
+  const { data, isLoading } = useFetchTourismPlaces(20000);
 
   useEffect(() => {
     loadFavorites();
@@ -84,7 +84,7 @@ const Favorites = () => {
 
       {isLoading ? (
         <View className="flex-1 justify-center items-center">
-          <ActivityIndicator size="large" color="#F98C53" />
+          <ActivityIndicator size="large" color="#FF7043" />
         </View>
       ) : filteredPlaces.length === 0 ? (
         <View className="flex-1 justify-center items-center px-5">

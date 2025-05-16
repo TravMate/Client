@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import React from "react";
 import { Place } from "@/types/type";
 import SmallPlaceCard from "./SmallPlaceCard";
@@ -10,23 +10,24 @@ interface PlacesProps {
 }
 
 const PlacesList = ({ data, title, containerStyle }: PlacesProps) => {
+  const reversedData = [...data].reverse(); // Create a reversed copy
+
   return (
     <View style={[containerStyle]} className="mt-10">
       <Text className="text-2xl font-bold ml-5">{title}</Text>
-      <ScrollView
-        horizontal={true}
+      <FlatList
+        data={reversedData} // Use the reversed data
+        horizontal
         showsHorizontalScrollIndicator={false}
-        style={{
+        contentContainerStyle={{
           paddingEnd: 10,
           paddingTop: 10,
           paddingBottom: 10,
           paddingStart: 5,
         }}
-      >
-        {data?.map((item) => (
-          <SmallPlaceCard item={item} key={item.id} />
-        ))}
-      </ScrollView>
+        renderItem={({ item }) => <SmallPlaceCard item={item} />}
+        keyExtractor={(item) => item.id.toString()}
+      />
     </View>
   );
 };

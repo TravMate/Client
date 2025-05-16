@@ -34,7 +34,7 @@ const CustomButton = ({
       {isLoading && (
         <ActivityIndicator
           animating={isLoading}
-          color="#fff"
+          color="#FF7043"
           size="small"
           className="ml-2"
         />

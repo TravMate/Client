@@ -20,7 +20,7 @@ interface DriverCardProps {
 }
 
 const GuideCard = ({ item, selected, setSelected }: DriverCardProps) => {
-  console.log(selected);
+  // console.log(selected);
   const isSelected = selected === item.id;
   return (
     <TouchableOpacity

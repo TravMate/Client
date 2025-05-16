@@ -5,6 +5,7 @@ import { router } from "expo-router";
 import * as Icons from "react-native-heroicons/outline";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { UserProps } from "@/types/type";
+import usePlanTripStore from "@/store/planTripStore";
 
 const buttonStyles = {
   borderWidth: 1,
@@ -21,6 +22,7 @@ const buttonStyles = {
 
 const Profile = () => {
   const [user, setUser] = useState<UserProps | null>(null);
+  const { clearPlaces } = usePlanTripStore();
 
   useEffect(() => {
     const loadUser = async () => {
@@ -34,6 +36,7 @@ const Profile = () => {
 
   const logoutHandlePress = async () => {
     await logout();
+    clearPlaces();
     router.replace("/welcome");
   };
 
@@ -43,6 +46,10 @@ const Profile = () => {
 
   const navigateToFavorites = () => {
     router.push("/favorites");
+  };
+
+  const navigateToBookedTrips = () => {
+    router.push("/Trips");
   };
 
   const navigateToHelp = () => {
@@ -126,6 +133,19 @@ const Profile = () => {
             />
             <Text className="text-base text-gray-600 ml-3">
               Help and support
+            </Text>
+          </View>
+          <Icons.ChevronRightIcon size={24} color="#666" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={navigateToBookedTrips}
+          className="flex-row items-center bg-white rounded-2xl py-4 px-4 shadow-sm mt-4"
+          style={buttonStyles}
+        >
+          <View className="flex-row items-center flex-1">
+            <Icons.MapIcon size={28} color="white" fill="rgba(0, 0, 0, 0.60)" />
+            <Text className="text-base text-gray-600 ml-3">
+              Your Booked Trips
             </Text>
           </View>
           <Icons.ChevronRightIcon size={24} color="#666" />

@@ -18,6 +18,7 @@ import CalculateDistance from "@/components/CalculateDistance";
 import ChooseGuide from "@/components/ChooseGuide";
 import { useRouteMatrix } from "@/hooks/useCalculateDistance";
 import ReviewConfirm from "@/components/ReviewConfirm";
+import { useTripsStore } from "@/store/tripsStore";
 
 const width = Dimensions.get("window").width;
 
@@ -32,7 +33,7 @@ const stepsConfig = [
   },
   {
     component: () => <ChooseGuide />,
-    title: "Choose Tourguide",
+    title: "Choose Your Guide",
   },
   {
     component: (props: any) => (
@@ -49,9 +50,13 @@ const Trip = () => {
   const { data: routes } = useRouteMatrix(places);
   const { selectedGuide } = useGuideStore();
   const breakdown = getTripPriceBreakdown(routes || [], selectedGuide);
+  // const { trips, fetchUserTrips } = useTripsStore();
+
+  // console.log("Trip data:", trips);
 
   // Use useEffect to handle state changes based on places
   useEffect(() => {
+    // const userTrips = fetchUserTrips();
     if (places.length > 0 && currentStep === 0) {
       setCurrentStep(1);
     }
@@ -72,10 +77,9 @@ const Trip = () => {
       setCurrentStep(currentStep - 1);
     }
   };
-
   const handleEdit = () => setCurrentStep(1); // Go back to trip planning
   const handleConfirm = () => {
-    /* TODO: handle reservation confirmation */
+    setCurrentStep(0); // Reset to initial step
   };
 
   return (

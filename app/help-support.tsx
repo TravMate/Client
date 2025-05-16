@@ -119,7 +119,7 @@ const HelpSupport = () => {
           >
             <Icons.ChevronLeftIcon size={24} color="#666" />
           </TouchableOpacity>
-          <Text className="text-2xl font-semibold text-center ml-24">
+          <Text className="text-2xl font-semibold text-center ml-16">
             Help & Support
           </Text>
         </View>
