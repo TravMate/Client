@@ -9,7 +9,8 @@ import { useGuideStore } from "@/store/guideStore";
 export interface Guide {
   $id: string;
   name: string;
-  price: number;
+  priceWithGuidance: number;
+  priceWithoutGuidance: number;
   rating: number;
   guideImageUrl: string | null;
   carImageUrl: string | null;
@@ -32,12 +33,9 @@ const GuideCardSkeleton = () => {
 };
 
 const ChooseGuide = () => {
-  // const [guides, setGuides] = useState<Guide[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { guides, selectedGuide, setGuides, setSelectedGuide } =
     useGuideStore();
-
-  // console.log("Guides from store:", guides);
 
   useEffect(() => {
     const fetchGuides = async () => {
@@ -76,7 +74,8 @@ const ChooseGuide = () => {
             item={{
               id: item.$id,
               name: item.name,
-              price: item.price,
+              priceWithGuidance: item.priceWithGuidance,
+              priceWithoutGuidance: item.priceWithoutGuidance,
               rating: item.rating,
               imageUrl: item.guideImageUrl || undefined,
               carImageUrl: item.carImageUrl || undefined,

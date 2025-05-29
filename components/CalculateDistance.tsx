@@ -256,6 +256,8 @@ const FAQModal = ({
   );
 };
 
+const loadingTest = true;
+
 const PlaceCard = ({ place, distance, index, totalPlaces }: any) => {
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [recommendations, setRecommendations] =

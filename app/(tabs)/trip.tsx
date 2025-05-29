@@ -18,26 +18,38 @@ import CalculateDistance from "@/components/CalculateDistance";
 import ChooseGuide from "@/components/ChooseGuide";
 import { useRouteMatrix } from "@/hooks/useCalculateDistance";
 import ReviewConfirm from "@/components/ReviewConfirm";
-import { useTripsStore } from "@/store/tripsStore";
+import ChooseGuidanceType from "@/components/ChooseGuidanceType";
 
-const width = Dimensions.get("window").width;
+// const width = Dimensions.get("window").width;
+
+interface StepProps {
+  onNavigateNext?: () => void;
+  onEdit?: () => void;
+  onConfirm?: () => void;
+}
 
 const stepsConfig = [
   {
-    component: () => <PlanTrip />,
+    component: (props: StepProps) => <PlanTrip />,
     title: "Plan Your Trip",
   },
   {
-    component: () => <CalculateDistance />,
+    component: (props: StepProps) => <CalculateDistance />,
     title: "Preview Your Trip",
   },
   {
-    component: () => <ChooseGuide />,
+    component: (props: StepProps) => (
+      <ChooseGuidanceType onNavigateNext={props.onNavigateNext!} />
+    ),
+    title: "Choose Guidance Type",
+  },
+  {
+    component: (props: StepProps) => <ChooseGuide />,
     title: "Choose Your Guide",
   },
   {
-    component: (props: any) => (
-      <ReviewConfirm onEdit={props.onEdit} onConfirm={props.onConfirm} />
+    component: (props: StepProps) => (
+      <ReviewConfirm onEdit={props.onEdit!} onConfirm={props.onConfirm!} />
     ),
     title: "Review & Confirm",
   },
@@ -50,9 +62,6 @@ const Trip = () => {
   const { data: routes } = useRouteMatrix(places);
   const { selectedGuide } = useGuideStore();
   const breakdown = getTripPriceBreakdown(routes || [], selectedGuide);
-  // const { trips, fetchUserTrips } = useTripsStore();
-
-  // console.log("Trip data:", trips);
 
   // Use useEffect to handle state changes based on places
   useEffect(() => {
@@ -67,7 +76,7 @@ const Trip = () => {
   };
 
   const handleNext = () => {
-    if (currentStep < 4) {
+    if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -103,9 +112,6 @@ const Trip = () => {
             ) : null,
           headerTitle:
             currentStep > 0 ? stepsConfig[currentStep - 1].title : "",
-          headerStyle: {
-            height: 70,
-          },
           headerTitleAlign: "center",
           headerBackground: () => (
             <View
@@ -121,7 +127,7 @@ const Trip = () => {
                 style={{
                   backgroundColor: "#F98C53",
                   height: 4,
-                  width: `${(currentStep / 4) * 100}%`,
+                  width: `${(currentStep / 5) * 100}%`,
                 }}
               />
             </View>
@@ -154,15 +160,18 @@ const Trip = () => {
       ) : (
         <View className="flex-1 flex-col">
           <View className="flex-1">
-            {currentStep === 4
-              ? stepsConfig[3].component({
+            {currentStep === 5
+              ? stepsConfig[4].component({
                   onEdit: handleEdit,
                   onConfirm: handleConfirm,
                 })
-              : currentStep > 0 && stepsConfig[currentStep - 1].component()}
+              : currentStep > 0 &&
+                stepsConfig[currentStep - 1].component({
+                  onNavigateNext: handleNext,
+                })}
           </View>
 
-          {currentStep < 4 && (
+          {currentStep < 5 && currentStep !== 3 && (
             <View className="px-8 py-2 mt-auto">
               {currentStep === 2 ? (
                 <View className="flex-row items-center justify-between">
@@ -181,7 +190,7 @@ const Trip = () => {
                 </View>
               ) : (
                 <CustomButton
-                  title={currentStep === 4 ? "Finish" : "Next"}
+                  title="Next"
                   handlePress={handleNext}
                   containerStyles="w-full mx-auto min-h-[46px] bg-[#F98C53] rounded-xl"
                   textStyles="text-white"

@@ -33,6 +33,7 @@ const ReviewConfirm = ({
 }) => {
   const [formattedPlaces, setFormattedPlaces] = useState<string[]>([]);
   const { places } = usePlanTripStore();
+  const { withGuidance } = usePlanTripStore();
   useEffect(() => {
     const formatted = places.map(
       (place) => place.structuredFormat?.mainText?.text
@@ -87,6 +88,7 @@ const ReviewConfirm = ({
               status: "booked",
               paymentIntentId: response.paymentIntent.id,
               createdAt: new Date(),
+              withGuidance,
             });
             setSuccess(true);
             clearPlaces();
@@ -169,7 +171,9 @@ const ReviewConfirm = ({
 
   // Guide info
   const guide = guides.find((g) => g.$id === selectedGuide);
-  const guideHourly = guide ? guide.price : 0;
+  const guideHourly = withGuidance
+    ? guide?.priceWithGuidance
+    : guide?.priceWithoutGuidance;
   const guideName = guide ? guide.name : "-";
   const guideRating = guide ? guide.rating : null;
   const guideCost = breakdown.guide;

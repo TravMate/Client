@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as SolidIcons from "react-native-heroicons/solid";
+import usePlanTripStore from "@/store/planTripStore";
 
 const defaultAvatar = require("../assets/images/Tour guide-amico 1.png");
 const defaultCar = require("../assets/images/carImage4.png");
@@ -9,7 +10,8 @@ interface DriverCardProps {
   item: {
     id: string;
     name: string;
-    price: number;
+    priceWithGuidance: number;
+    priceWithoutGuidance: number;
     time: number;
     rating: number;
     imageUrl?: string;
@@ -20,7 +22,8 @@ interface DriverCardProps {
 }
 
 const GuideCard = ({ item, selected, setSelected }: DriverCardProps) => {
-  // console.log(selected);
+  // console.log(item.price);
+  const { withGuidance } = usePlanTripStore();
   const isSelected = selected === item.id;
   return (
     <TouchableOpacity
@@ -46,7 +49,12 @@ const GuideCard = ({ item, selected, setSelected }: DriverCardProps) => {
         <View style={styles.priceDetailsContainer}>
           <View style={styles.priceContainer}>
             <SolidIcons.CurrencyDollarIcon size={16} color="#FF7043" />
-            <Text style={styles.price}>${item.price}</Text>
+            <Text style={styles.price}>
+              $
+              {withGuidance
+                ? item.priceWithGuidance
+                : item.priceWithoutGuidance}
+            </Text>
           </View>
         </View>
       </View>

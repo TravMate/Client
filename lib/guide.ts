@@ -80,7 +80,8 @@ async function fetchGuideById(guideId: string): Promise<Guide | null> {
     return {
       $id: guide.$id,
       name: guide.name,
-      price: guide.price,
+      priceWithGuidance: guide.priceWithGuidance,
+      priceWithoutGuidance: guide.priceWithoutGuidance,
       rating: guide.rating,
       guideImageUrl,
       carImageUrl,
@@ -91,7 +92,7 @@ async function fetchGuideById(guideId: string): Promise<Guide | null> {
       $permissions: guide.$permissions,
     };
   } catch (error) {
-    console.error("Error fetching guide:", error);
+    console.error("Error fetching guide by ID:", error);
     return null;
   }
 }

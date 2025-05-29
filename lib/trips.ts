@@ -20,6 +20,7 @@ export interface Trip {
   status: "booked" | "cancelled";
   paymentIntentId: string;
   createdAt: Date;
+  withGuidance: boolean;
 }
 
 export async function createTrip(tripData: Omit<Trip, "$id">) {
@@ -27,7 +28,6 @@ export async function createTrip(tripData: Omit<Trip, "$id">) {
     return await database.createDocument(
       `${DATABASE_ID}`,
       `${TRIPS_COLLECTION_ID}`,
-      //   "681e892f001d1ba40e84",
       ID.unique(),
       tripData
     );

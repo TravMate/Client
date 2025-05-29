@@ -19,7 +19,9 @@ interface PriceBreakdown {
 
 interface PlanTripState {
   places: TripPlace[];
+  withGuidance: boolean;
   addPlace: (place: PlacePrediction) => void;
+  chooseGuidePrice: (withGuide: boolean) => void;
   removePlace: (id: string) => void;
   clearPlaces: () => void;
   updatePlaceDuration: (placeId: string, duration: number) => void;
@@ -34,6 +36,7 @@ const usePlanTripStore = create<PlanTripState>()(
   persist(
     (set, get) => ({
       places: [],
+      withGuidance: false,
       addPlace: (place) => {
         set((state) => ({
           // Check if the place already exists in the list
@@ -41,6 +44,9 @@ const usePlanTripStore = create<PlanTripState>()(
             ? state.places
             : [...state.places, { ...place, duration: 60 }], // Default duration: 60 minutes
         }));
+      },
+      chooseGuidePrice: (withGuide: boolean) => {
+        set({ withGuidance: withGuide });
       },
       removePlace: (id: string) => {
         set((state) => ({
@@ -92,8 +98,11 @@ const usePlanTripStore = create<PlanTripState>()(
         if (selectedGuideId) {
           const selectedGuide = guides.find((g) => g.$id === selectedGuideId);
           if (selectedGuide) {
-            // Guide price is now hourly rate
-            guide = selectedGuide.price * totalHours;
+            // Use the appropriate price based on guidance choice
+            const priceToUse = get().withGuidance
+              ? selectedGuide.priceWithGuidance
+              : selectedGuide.priceWithoutGuidance;
+            guide = priceToUse * totalHours;
           }
         }
 

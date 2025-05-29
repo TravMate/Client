@@ -25,6 +25,7 @@ const BookedTripDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
   const route = useRoute();
   const data = route.params as BookedTripDetailsProps;
+  const withGuidance = data.bookedTripData.withGuidance;
 
   useEffect(() => {
     const loadData = async () => {
@@ -36,7 +37,7 @@ const BookedTripDetails = () => {
           const guideData = await fetchGuideById(data.bookedTripData.guideId);
           setGuide(guideData);
         } catch (error) {
-          console.error("Error fetching guide:", error);
+          console.error("Error fetching guide for Booked Trip details:", error);
         }
       }
       setIsLoading(false);
@@ -128,7 +129,13 @@ const BookedTripDetails = () => {
                 <SolidIcons.StarIcon size={16} color="#FF7043" />
                 <Text style={styles.ratingText}>{guide.rating}</Text>
               </View>
-              <Text style={styles.priceText}>${guide.price}/hr</Text>
+              <Text style={styles.priceText}>
+                $
+                {withGuidance
+                  ? guide.priceWithGuidance
+                  : guide.priceWithoutGuidance}
+                /hr
+              </Text>
             </View>
           </View>
         </View>

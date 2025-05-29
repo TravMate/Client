@@ -4,6 +4,7 @@ import {
   View,
   FlatList,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect } from "react";
 import TripCard from "@/components/TripCard";
@@ -12,7 +13,7 @@ import { router } from "expo-router";
 import * as Icons from "react-native-heroicons/outline";
 
 const Trips = () => {
-  const { trips, fetchUserTrips } = useTripsStore();
+  const { trips, fetchUserTrips, loading } = useTripsStore();
 
   const buttonStyles = {
     shadowColor: "rgba(0, 0, 0, 0.1)",
@@ -28,6 +29,14 @@ const Trips = () => {
   useEffect(() => {
     fetchUserTrips();
   }, []);
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center h-screen">
+        <ActivityIndicator size="large" color="#FF7043" />
+      </View>
+    );
+  }
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <View className="relative px-5 py-4">
