@@ -17,6 +17,9 @@ import { router } from "expo-router";
 import * as Icons from "react-native-heroicons/outline";
 import { useFetchTourismPlaces } from "@/hooks/FetchTourismPLaces";
 
+
+
+
 const { width } = Dimensions.get("window");
 const CARD_GAP = 16;
 const HORIZONTAL_PADDING = 20;
