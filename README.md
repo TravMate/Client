@@ -1,50 +1,54 @@
-# Welcome to your Expo app 👋
+# TravMate - Travel Companion App 🚀
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+![TravMate Banner](https://via.placeholder.com/1200x400?text=TravMate+Banner) <!-- Replace with your actual banner image -->
 
-## Get started
+A modern travel companion built with React Native (Expo) featuring AI-powered recommendations, trip planning, and secure payments.
 
-1. Install dependencies
+[![Demo Video](https://img.shields.io/badge/WATCH_DEMO-FF0000?style=for-the-badge&logo=youtube)](https://drive.google.com/file/d/16Q66eQ3ChEmyWf8tyHjaoibazD1UkdBs/view) 
+[![GitHub License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
-   ```bash
-   npm install
-   ```
+---
 
-2. Start the app
+## ✨ Features
 
-   ```bash
-    npx expo start
-   ```
+- 🗺️ Interactive maps with `react-native-maps`
+- 🤖 AI recommendations via Google Gemini
+- 💳 Integrated Stripe payments
+- 📅 Trip planning and itinerary management
+- 📍 Location tracking with `expo-location`
+- 🎨 Beautiful UI with NativeWind (Tailwind for RN)
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🛠️ Tech Stack
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+| Category          | Technologies                                                                 |
+|-------------------|-----------------------------------------------------------------------------|
+| **Core**          | React Native, Expo, TypeScript                                              |
+| **Navigation**    | `expo-router`, `@react-navigation`                                         |
+| **State**         | Zustand                                                                     |
+| **Styling**       | NativeWind, `expo-linear-gradient`                                         |
+| **APIs**          | Axios, React Query                                                         |
+| **AI**            | `@google/generative-ai`                                                    |
+| **Payments**      | `@stripe/stripe-react-native`                                              |
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## 🚀 Getting Started
 
+### Prerequisites
+- Node.js 18+
+- Expo CLI (`npm install -g expo-cli`)
+- Yarn/npm/pnpm
+
+### Installation
 ```bash
-npm run reset-project
-```
+# Clone the repository
+git clone https://github.com/your-username/travmate-app.git
+cd travmate-app
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+# Install dependencies
+npm install
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+# Start the development server
+npx expo start
