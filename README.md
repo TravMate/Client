@@ -1,7 +1,5 @@
 # TravMate - Travel Companion App 🚀
 
-![TravMate Banner](https://via.placeholder.com/1200x400?text=TravMate+Banner) <!-- Replace with your actual banner image -->
-
 A modern travel companion built with React Native (Expo) featuring AI-powered recommendations, trip planning, and secure payments.
 
 [![Demo Video](https://img.shields.io/badge/WATCH_DEMO-FF0000?style=for-the-badge&logo=youtube)](https://drive.google.com/file/d/16Q66eQ3ChEmyWf8tyHjaoibazD1UkdBs/view) 
