@@ -2,7 +2,7 @@
 
 A modern travel companion built with React Native (Expo) featuring AI-powered recommendations, trip planning, and secure payments.
 
-[![Demo Video](https://img.shields.io/badge/WATCH_DEMO-FF0000?style=for-the-badge&logo=youtube)](https://drive.google.com/file/d/16Q66eQ3ChEmyWf8tyHjaoibazD1UkdBs/view) 
+[![Demo Video](https://img.shields.io/badge/WATCH_DEMO-FF0000?style=for-the-badge&logo=youtube)](https://drive.google.com/file/d/1QjEyhAm0X0hfrYIws67BeSJyyYKYvMEr/view?usp=sharing) 
 [![GitHub License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
 ---
